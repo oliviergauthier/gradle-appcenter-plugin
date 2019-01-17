@@ -1,0 +1,135 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
+    }
+}
+
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.11'
+}
+
+apply plugin: "com.gradle.plugin-publish"
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
+
+group 'com.betomorrow.gradle'
+version '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compileOnly gradleApi()
+
+    // Third Party
+    compile 'com.google.api-client:google-api-client:1.27.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.27.0'
+    compile 'com.google.apis:google-api-services-drive:v3-rev136-1.25.0'
+    compile 'org.apache.commons:commons-compress:1.18'
+    compile 'org.apache.poi:poi-ooxml:4.0.1'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+    testCompile 'org.assertj:assertj-core:3.11.1'
+    testCompile gradleTestKit()
+
+    testRuntime "cglib:cglib-nodep:3.2.4"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "org.objenesis:objenesis:2.4"    // allows mocking of classes without default constructor (together with CGLIB)
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+    useJUnitPlatform {}
+}
+
+/**
+ * Integration test
+ */
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/kotlin')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test, group: "verification") {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+check.dependsOn integrationTest
+
+gradlePlugin {
+    testSourceSets sourceSets.integrationTest
+}
+
+/**
+ * Publishing
+ */
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        BintrayPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar
+        }
+    }
+}
+
+wrapper {
+    gradleVersion = "5.1"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+pluginBundle {
+
+    website = 'https://github.com/oliviergauthier/gradle-appcenter-plugin'
+    vcsUrl = 'https://github.com/oliviergauthier/gradle-appcenter-plugin'
+    tags = ['android', 'appcenter', 'plugin', 'tool']
+
+    plugins {
+
+        libraryPlugin {
+            id = 'com.betomorrow.gradle.wording'
+            displayName = 'Gradle Wording Plugin'
+            description = 'Plugin to import wording from Google Sheet then integrate it in standard translations files.'
+        }
+
+    }
+
+}
