@@ -1,6 +1,11 @@
-plugins {
-    id 'com.betomorrow.appcenter'
-}
+
+
+
+//plugins {
+//    id 'com.betomorrow.appcenter'
+//}
+
+apply plugin: "com.betomorrow.appcenter"
 
 apply plugin: 'com.android.application'
 
@@ -18,6 +23,36 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            manifestPlaceholders = [
+                    appName: "Amelia Phone Dev",
+            ]
+            buildConfigField("String", "APPCENTER_ID", '"049be7df-3efd-48a1-ab00-ec5c1999a831"')
+        }
+        demo {
+            dimension "environment"
+            applicationIdSuffix ".demo"
+            versionNameSuffix "-demo"
+            manifestPlaceholders = [
+                    appName: "Amelia Phone Demo",
+            ]
+            buildConfigField("String", "APPCENTER_ID", '"ccf884b7-e9ab-433c-a0f0-c7f3e551a16e"')
+        }
+        prod {
+            dimension "environment"
+            manifestPlaceholders = [
+                    appName: "Amelia Phone",
+            ]
+            buildConfigField("String", "APPCENTER_ID", '"e7459683-f4e5-4acd-8bec-47a4f59908a4"')
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

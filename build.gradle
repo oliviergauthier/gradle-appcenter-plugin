@@ -25,6 +25,8 @@ version '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
+    google()
 }
 
 dependencies {
@@ -32,11 +34,7 @@ dependencies {
     compileOnly gradleApi()
 
     // Third Party
-    compile 'com.google.api-client:google-api-client:1.27.0'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.27.0'
-    compile 'com.google.apis:google-api-services-drive:v3-rev136-1.25.0'
-    compile 'org.apache.commons:commons-compress:1.18'
-    compile 'org.apache.poi:poi-ooxml:4.0.1'
+    compileOnly 'com.android.tools.build:gradle:3.3.0'
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
