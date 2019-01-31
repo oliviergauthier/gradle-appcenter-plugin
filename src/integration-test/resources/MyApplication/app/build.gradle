@@ -61,6 +61,23 @@ android {
     }
 }
 
+appcenter {
+    apiToken = "qwertyuiop"
+    ownerName = "betomorrow"
+    distributionGroups = ["demo", "sample"]
+    apps {
+        dev {
+            dimension = "environment"
+            appName = "SampleApp"
+            appCenterId = "8f780f3a-2756-445a-a9f3-77271f6f9ddc"
+        }
+        prodRelease {
+            appName = "SampleApp"
+            appCenterId = "8f780f3a-2756-445a-a9f3-77271f6f9ddc"
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
