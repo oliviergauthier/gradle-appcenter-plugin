@@ -27,20 +27,27 @@ class AppCenterPlugin : Plugin<Project> {
                     }.firstOrNull { it != null } ?: appCenterExtension.findByBuildVariant(variant.name)
 
                     appCenterApp?.let {
-                        project.tasks.register("upload${variant.name.capitalize()}", UploadAppCenterTask::class.java) { t ->
-                            t.group = APP_CENTER_PLUGIN_GROUP
-                            t.description = "Upload apk to AppCenter"
+                        variant.outputs.first()?.let { output ->
+                            project.tasks.register(
+                                "upload${variant.name.capitalize()}", UploadAppCenterTask::class.java
+                            ) { t ->
+                                t.group = APP_CENTER_PLUGIN_GROUP
+                                t.description = "Upload apk to AppCenter"
 
-                            t.apiToken = appCenterApp.apiToken
-                            t.appName = appCenterApp.appName
-                            t.distributionGroups = appCenterApp.distributionGroups
-                            t.ownerName = appCenterApp.ownerName
+                                t.apiToken = appCenterApp.apiToken
+                                t.appName = appCenterApp.appName
+                                t.distributionGroups = appCenterApp.distributionGroups
+                                t.ownerName = appCenterApp.ownerName
+                                t.file = output.outputFile
+                                t.releaseNotes = appCenterApp.releaseNotes
+                            }
                         }
                     }
                 }
             }
 
         }
+
     }
 
     companion object {

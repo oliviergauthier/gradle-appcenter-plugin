@@ -8,7 +8,9 @@ open class AppCenterExtension(val project: Project) {
 
     lateinit var apiToken : String
     lateinit var ownerName : String
+
     var distributionGroups : List<String> = emptyList()
+    var releaseNotes : Any? = null
 
     var apps : NamedDomainObjectContainer<AppCenterAppExtension> = project.container(AppCenterAppExtension::class.java) {
         AppCenterAppExtension(it, this)

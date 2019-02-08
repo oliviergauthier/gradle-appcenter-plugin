@@ -8,12 +8,13 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
 
     private var _distributionGroups: List<String>? = null
 
+    private var _releaseNotes: Any? = null
+
     var dimension: String? = null
 
     lateinit var appName: String
 
     var appCenterId: String? = null
-
 
     var apiToken: String
         get() {
@@ -39,6 +40,15 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
         set(value) {
             this.distributionGroups = value
         }
+
+    var releaseNotes : Any?
+        get() {
+            return _releaseNotes?: parent.releaseNotes
+        }
+        set(value) {
+            this._releaseNotes = value
+        }
+
 
     fun dimension(dimension: String) {
         this.dimension = dimension
