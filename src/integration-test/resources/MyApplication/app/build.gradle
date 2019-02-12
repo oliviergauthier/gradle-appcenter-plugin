@@ -62,9 +62,10 @@ android {
 }
 
 appcenter {
-    apiToken = "qwertyuiop"
-    ownerName = "betomorrow"
-    distributionGroups = ["demo", "sample"]
+    apiToken = project.properties.get("apiToken", "")
+    ownerName = project.properties.get("ownerName", "")
+    distributionGroups = ["Sample Group"]
+    releaseNotes = "A Sample Upload"
     apps {
         dev {
             dimension = "environment"

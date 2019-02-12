@@ -21,14 +21,14 @@ class AppCenterPlugin : Plugin<Project> {
                 androidExtension.applicationVariants.whenObjectAdded { variant ->
                     val appCenterApp = variant.productFlavors.map {
                         appCenterExtension.findByFlavor(
-                            it.dimension,
-                            it.name
+                            it.name,
+                            it.dimension
                         )
                     }.firstOrNull { it != null } ?: appCenterExtension.findByBuildVariant(variant.name)
 
                     appCenterApp?.let {
                         variant.outputs.first()?.let { output ->
-                            project.tasks.register(
+                            val task = project.tasks.register(
                                 "upload${variant.name.capitalize()}", UploadAppCenterTask::class.java
                             ) { t ->
                                 t.group = APP_CENTER_PLUGIN_GROUP
@@ -40,7 +40,9 @@ class AppCenterPlugin : Plugin<Project> {
                                 t.ownerName = appCenterApp.ownerName
                                 t.file = output.outputFile
                                 t.releaseNotes = appCenterApp.releaseNotes
-                            }
+
+                                t.dependsOn("assemble${variant.name.capitalize()}")
+                            }.get()
                         }
                     }
                 }

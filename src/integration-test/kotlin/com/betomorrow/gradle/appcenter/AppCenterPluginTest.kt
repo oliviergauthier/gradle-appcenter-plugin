@@ -11,7 +11,7 @@ class AppCenterPluginTest {
 
         val result = GradleRunner.create()
             .withProjectDir(File("src/integration-test/resources/MyApplication"))
-            .withArguments("tasks", "--stacktrace")
+            .withArguments("clean", "uploadDevDebug", "--stacktrace", "-PownerName=ogauthierbto",  "-PapiToken=dbf35aa0107b408840e3d8d7216ab8f1f7fbd8eb")
             .withPluginClasspath()
             .withDebug(true)
             .build()
