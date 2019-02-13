@@ -29,7 +29,7 @@ open class AppCenterExtension(val project: Project) {
             return _ownerName ?: System.getProperty("APPCENTER_OWNER_NAME", "")
         }
         set(value) {
-            this._apiToken = value
+            this._ownerName = value
         }
 
     var releaseNotes: Any
