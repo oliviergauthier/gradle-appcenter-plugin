@@ -34,7 +34,11 @@ class AppCenterPlugin : Plugin<Project> {
 
     }
 
-    private fun handleVariant(variant : ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
+    private fun handleVariant(variant: ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
+        if (variant.signingConfig?.keyAlias == "AndroidDebugKey") {
+            return
+        }
+
         val appCenterApp = variant.productFlavors.map {
             appCenterExtension.findByFlavor(
                 it.name,
@@ -45,7 +49,6 @@ class AppCenterPlugin : Plugin<Project> {
         appCenterApp?.let {
 
             variant.outputs.first()?.let { output ->
-
                 val task = project.tasks.register(
                     "upload${variant.name.capitalize()}", UploadAppCenterTask::class.java
                 ) { t ->

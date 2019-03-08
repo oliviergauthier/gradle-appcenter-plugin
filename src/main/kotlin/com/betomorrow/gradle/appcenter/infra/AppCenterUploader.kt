@@ -14,7 +14,7 @@ class AppCenterUploader(
         val prepareResponse = apiClient.prepare(ownerName, appName).execute()
         if (!prepareResponse.isSuccessful) {
             throw AppCenterUploaderException("Can't prepare release, code=${prepareResponse.code()}, " +
-                    "reason=${prepareResponse.errorBody()}")
+                    "reason=${prepareResponse.errorBody()?.string()}")
         }
 
         val preparedUpload = prepareResponse.body()!!
@@ -22,14 +22,14 @@ class AppCenterUploader(
         val uploadResponse = doUpload(preparedUpload.uploadUrl, file).execute()
         if (!uploadResponse.isSuccessful) {
             throw AppCenterUploaderException("Can't upload APK, code=${uploadResponse.code()}, " +
-                    "reason=${uploadResponse.body()?.toString()}")
+                    "reason=${uploadResponse.body()?.string()}")
         }
 
         val commitRequest = CommitRequest("committed")
         val commitResponse = apiClient.commit(ownerName, appName, preparedUpload.uploadId, commitRequest).execute()
         if (!commitResponse.isSuccessful) {
             throw AppCenterUploaderException("Can't commit release, code=${commitResponse.code()}, " +
-                    "reason=${commitResponse.errorBody()}")
+                    "reason=${commitResponse.errorBody()?.string()}")
         }
 
         val committed = commitResponse.body()!!
@@ -40,7 +40,7 @@ class AppCenterUploader(
         val distributeResponse = apiClient.distribute(ownerName, appName, committed.releaseId, request).execute()
         if (!distributeResponse.isSuccessful) {
             throw AppCenterUploaderException("Can't distribute release, code=${distributeResponse.code()}, " +
-                    "reason=${distributeResponse.errorBody()}")
+                    "reason=${distributeResponse.errorBody()?.string()}")
         }
     }
 
