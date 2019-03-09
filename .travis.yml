@@ -13,7 +13,7 @@ matrix:
 stages:
   - compile
   - name: deploy
-    if: branche == master
+    if: branche = master
 
 jobs:
   include:
