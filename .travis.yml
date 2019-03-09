@@ -1,0 +1,25 @@
+language: kotlin
+
+jdk:
+  - oraclejdk8
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+matrix:
+  fast_finish: true
+
+#install: ./gradlew assemble --stacktrace
+script:
+  - ./gradlew check --stacktrace
+  - ./gradlew assemble --stacktrace
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.gradle/caches/'
+    - '$HOME/.gradle/wrapper/'
+    - '$HOME/.m2/repository/'
+
+notifications:
+  email: true
