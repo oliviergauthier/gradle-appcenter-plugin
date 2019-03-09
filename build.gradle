@@ -129,7 +129,7 @@ pluginBundle {
     plugins {
 
         libraryPlugin {
-            id = 'com.betomorrow.gradle.appcenter'
+            id = 'com.betomorrow.appcenter'
             displayName = 'Gradle AppCenter Plugin'
             description = 'Plugin to upload apk to AppCenter'
         }
