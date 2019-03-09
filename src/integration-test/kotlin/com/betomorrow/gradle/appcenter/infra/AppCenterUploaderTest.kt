@@ -1,11 +1,13 @@
 package com.betomorrow.gradle.appcenter.infra
 
+import org.gradle.internal.impldep.org.junit.Ignore
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class AppCenterUploaderTest {
 
-//    @Test
+    @Ignore
+    @Test
     fun testUploadApk() {
         val api = AppCenterAPIFactory().create(apiToken, true)
         val httpClient = OkHttpFactory().create(true)
