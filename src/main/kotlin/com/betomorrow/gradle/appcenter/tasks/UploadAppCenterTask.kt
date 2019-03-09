@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter.tasks
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import java.io.File
 import java.nio.file.Path
 
@@ -16,13 +17,20 @@ open class UploadAppCenterTask : DefaultTask() {
     lateinit var file: File
     var releaseNotes: Any? = null
 
+    private var logger = services[ProgressLoggerFactory::class.java]
+        .newOperation("AppCenter")
+
     @TaskAction
     fun upload() {
+        logger.start("AppCenter Upload", "Step 0/4")
         val uploader = AppCenterUploaderFactory().create(apiToken, ownerName, appName)
-        uploader.upload(file, toReleaseNotes(releaseNotes), distributionGroups)
+        uploader.upload(file, toReleaseNotes(releaseNotes), distributionGroups) {
+            logger.progress(it)
+        }
+        logger.completed("AppCenter Upload completed", false)
     }
 
-    fun toReleaseNotes(releaseNotes: Any?): String {
+    private fun toReleaseNotes(releaseNotes: Any?): String {
         return when (releaseNotes) {
             is File -> {
                 return releaseNotes.readText()
