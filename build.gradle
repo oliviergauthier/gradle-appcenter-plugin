@@ -129,9 +129,9 @@ pluginBundle {
     plugins {
 
         libraryPlugin {
-            id = 'com.betomorrow.gradle.wording'
-            displayName = 'Gradle Wording Plugin'
-            description = 'Plugin to import wording from Google Sheet then integrate it in standard translations files.'
+            id = 'com.betomorrow.gradle.appcenter'
+            displayName = 'Gradle AppCenter Plugin'
+            description = 'Plugin to upload apk to AppCenter'
         }
 
     }
