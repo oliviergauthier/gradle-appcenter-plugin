@@ -15,6 +15,7 @@ script:
   - ./gradlew assemble --stacktrace
   - ./gradlew publish -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret="toto"
 
+
 cache:
   directories:
     - '$HOME/.m2/repository'
