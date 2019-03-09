@@ -11,8 +11,6 @@ class AppCenterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
 
-        println("Configure AppCenter Plugin")
-
         with(project) {
 
             extensions.create(APP_CENTER_EXTENSION_NAME, AppCenterExtension::class.java, this)
