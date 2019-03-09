@@ -13,6 +13,10 @@ matrix:
 script:
   - ./gradlew check --stacktrace
   - ./gradlew assemble --stacktrace
+#
+#deploy:
+#  skip_cleanup: true
+#    - ./gradlew publish -Pgradle.publish.key= -Pgradle.publish.secret=
 
 cache:
   directories:
