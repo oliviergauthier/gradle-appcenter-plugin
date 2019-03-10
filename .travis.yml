@@ -10,10 +10,12 @@ before_cache:
 matrix:
   fast_finish: true
 
+script:
+  - echo "No Script"
+
 stages:
   - compile
-  - name: deploy
-    if: branche = master
+  - deploy
 
 jobs:
   include:
