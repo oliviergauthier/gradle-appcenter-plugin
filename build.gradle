@@ -18,10 +18,11 @@ plugins {
 apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'kotlin'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 group 'com.betomorrow.gradle'
-version '1.0.4'
+version '1.0.5'
 
 repositories {
     mavenCentral()
@@ -36,7 +37,7 @@ dependencies {
     // Third Party
     compileOnly 'com.android.tools.build:gradle:3.3.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    compile 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
