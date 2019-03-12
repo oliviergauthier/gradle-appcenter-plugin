@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter.extensions
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
+import java.lang.Exception
 
 open class AppCenterExtension(val project: Project) {
 
@@ -18,7 +19,7 @@ open class AppCenterExtension(val project: Project) {
 
     var apiToken: String
         get() {
-            return _apiToken ?: System.getProperty("APPCENTER_API_TOKEN", "")
+            return _apiToken ?: getGlobalConfig("APPCENTER_API_TOKEN", "")
         }
         set(value) {
             this._apiToken = value
@@ -26,7 +27,7 @@ open class AppCenterExtension(val project: Project) {
 
     var ownerName: String
         get() {
-            return _ownerName ?: System.getProperty("APPCENTER_OWNER_NAME", "")
+            return _ownerName ?: getGlobalConfig("APPCENTER_OWNER_NAME", "")
         }
         set(value) {
             this._ownerName = value
@@ -34,7 +35,7 @@ open class AppCenterExtension(val project: Project) {
 
     var releaseNotes: Any
         get() {
-            return _releaseNotes ?: System.getProperty("APPCENTER_DISTRIBUTE_RELEASE_NOTES", "")
+            return _releaseNotes ?: getGlobalConfig("APPCENTER__RELEASE_NOTES", "")
         }
         set(value) {
             _releaseNotes = value
@@ -45,7 +46,7 @@ open class AppCenterExtension(val project: Project) {
             return if (!_distributionGroups.isEmpty())
                 _distributionGroups
             else
-                System.getProperty("APPCENTER_DISTRIBUTE_DESTINATION", "").split(",")
+                getGlobalConfig("APPCENTER_DISTRIBUTION_GROUPS", "").split(",")
         }
         set(value) {
             _distributionGroups = value
@@ -61,6 +62,19 @@ open class AppCenterExtension(val project: Project) {
 
     fun findByBuildVariant(name: String): AppCenterAppExtension? {
         return apps.firstOrNull { it.name == name }
+    }
+
+    private fun getGlobalConfig(name: String, defaultValue: String) : String {
+        return try {
+            System.getProperty(name)
+        } catch (e: Exception) {
+            try {
+                System.getenv(name)
+            } catch (e: Exception) {
+                defaultValue
+            }
+        }
+
     }
 
 }

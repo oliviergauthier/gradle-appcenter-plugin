@@ -48,7 +48,7 @@ class AppCenterPlugin : Plugin<Project> {
 
             variant.outputs.first()?.let { output ->
                 val task = project.tasks.register(
-                    "upload${variant.name.capitalize()}", UploadAppCenterTask::class.java
+                    "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
                 ) { t ->
                     t.group = APP_CENTER_PLUGIN_GROUP
                     t.description = "Upload apk to AppCenter"
