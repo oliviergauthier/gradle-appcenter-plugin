@@ -83,7 +83,6 @@ The plugin will create 3 tasks :
 - appCenterUploadBetaRelease
 - appCenterUploadProdRelease
 
-> Note: Application signed with Android debug certificate can't be installed from AppCenter, so the plugin ignore debug profiles
 
 ## Override properties
 

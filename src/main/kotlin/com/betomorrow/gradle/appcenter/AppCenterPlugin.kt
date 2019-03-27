@@ -33,9 +33,6 @@ class AppCenterPlugin : Plugin<Project> {
     }
 
     private fun handleVariant(variant: ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
-        if (variant.signingConfig?.keyAlias == "AndroidDebugKey") {
-            return
-        }
 
         val appCenterApp = variant.productFlavors.map {
             appCenterExtension.findByFlavor(
