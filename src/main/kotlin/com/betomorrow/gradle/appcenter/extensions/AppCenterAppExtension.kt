@@ -38,7 +38,7 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
             return _distributionGroups ?: parent.distributionGroups
         }
         set(value) {
-            this.distributionGroups = value
+            this._distributionGroups = value
         }
 
     var releaseNotes : Any?
