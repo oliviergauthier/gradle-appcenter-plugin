@@ -20,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.betomorrow.gradle:appcenter-plugin:1.1.1"
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.1"
     }
 }
 
