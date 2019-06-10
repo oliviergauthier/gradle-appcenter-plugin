@@ -1,11 +1,13 @@
 package com.betomorrow.gradle.appcenter
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
 import com.betomorrow.gradle.appcenter.extensions.AppCenterExtension
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.io.File
 
 class AppCenterPlugin : Plugin<Project> {
 
@@ -43,22 +45,25 @@ class AppCenterPlugin : Plugin<Project> {
 
         appCenterApp?.let {
 
-            variant.outputs.first()?.let { output ->
-                val task = project.tasks.register(
-                    "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
-                ) { t ->
-                    t.group = APP_CENTER_PLUGIN_GROUP
-                    t.description = "Upload apk to AppCenter"
+            val packagesTask = variant.packageApplicationProvider.get()
+            variant.outputs.all { output ->
+                if (output is ApkVariantOutput) {
+                    project.tasks.register(
+                        "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
+                    ) { t ->
+                        t.group = APP_CENTER_PLUGIN_GROUP
+                        t.description = "Upload apk to AppCenter"
 
-                    t.apiToken = appCenterApp.apiToken
-                    t.appName = appCenterApp.appName
-                    t.distributionGroups = appCenterApp.distributionGroups
-                    t.ownerName = appCenterApp.ownerName
-                    t.file = output.outputFile
-                    t.releaseNotes = appCenterApp.releaseNotes
+                        t.apiToken = appCenterApp.apiToken
+                        t.appName = appCenterApp.appName
+                        t.distributionGroups = appCenterApp.distributionGroups
+                        t.ownerName = appCenterApp.ownerName
+                        t.fileProvider = { File(packagesTask.outputDirectory, output.outputFileName) }
+                        t.releaseNotes = appCenterApp.releaseNotes
 
-                    t.dependsOn("assemble${variant.name.capitalize()}")
-                }.get()
+                        t.dependsOn(packagesTask)
+                    }
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ open class UploadAppCenterTask : DefaultTask() {
     lateinit var appName: String
     var distributionGroups: List<String> = emptyList()
 
-    lateinit var file: File
+    lateinit var fileProvider: () -> File
     var releaseNotes: Any? = null
 
     private var logger = services[ProgressLoggerFactory::class.java]
@@ -24,7 +24,7 @@ open class UploadAppCenterTask : DefaultTask() {
     fun upload() {
         logger.start("AppCenter Upload", "Step 0/4")
         val uploader = AppCenterUploaderFactory().create(apiToken, ownerName, appName)
-        uploader.upload(file, toReleaseNotes(releaseNotes), distributionGroups) {
+        uploader.upload(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups) {
             logger.progress(it)
         }
         logger.completed("AppCenter Upload completed", false)
