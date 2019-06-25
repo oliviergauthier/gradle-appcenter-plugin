@@ -62,6 +62,7 @@ appcenter {
     ownerName = "ACME"                          // Owner Name of the AppCenter Application
     distributionGroups = ["Beta"]               // Name of the AppCenter Distribution Group
     releaseNotes = file("../changelog.md")      // Can be a file or text
+    notifyTesters = true                        // Send mail to testers
     apps {                                      // Here we manage 3 AppCenter applications : alpha, beta and prod
         alpha {                                 // When dimension is provided, this name match the productFlavor name
             dimension = "environment"           // This dimension match the flavor dimension
@@ -96,6 +97,7 @@ appcenter {
     ownerName = "ACME"
     distributionGroups = ["Beta"]
     releaseNotes = file("../changelog.md")
+    notifyTesters = false
     apps {      
         alpha {
             dimension = "environment"
@@ -104,6 +106,7 @@ appcenter {
             distributionGroups = ["Alpha"]
             releaseNotes = "No Changes"
             appName = "GradleSample-Alpha"
+            notifyTesters = true
         }
         prodRelease {           
             appName = "GradleSample"
@@ -116,4 +119,5 @@ appcenter {
 - `APPCENTER_API_TOKEN` : AppCenter API token
 - `APPCENTER_OWNER_NAME` : Owner name
 - `APPCENTER_DISTRIBUTION_GROUPS` : Comma separated list of distribution groups 
-- `APPCENTER_RELEASE_NOTES` :  Release notes in Markdown format
+- `APPCENTER_RELEASE_NOTES` : Release notes in Markdown format
+- `APPCENTER_NOTIFY_TESTERS` : Notify testers

@@ -60,6 +60,7 @@ class AppCenterPlugin : Plugin<Project> {
                         t.ownerName = appCenterApp.ownerName
                         t.fileProvider = { File(packagesTask.outputDirectory, output.outputFileName) }
                         t.releaseNotes = appCenterApp.releaseNotes
+                        t.notifyTesters = appCenterApp.notifyTesters
 
                         t.dependsOn(packagesTask)
                     }

@@ -13,6 +13,8 @@ open class AppCenterExtension(val project: Project) {
     var _distributionGroups: List<String> = emptyList()
     var _releaseNotes: Any? = null
 
+    var _notifyTesters: Boolean? = null
+
     var apps: NamedDomainObjectContainer<AppCenterAppExtension> = project.container(AppCenterAppExtension::class.java) {
         AppCenterAppExtension(it, this)
     }
@@ -52,6 +54,14 @@ open class AppCenterExtension(val project: Project) {
             _distributionGroups = value
         }
 
+    var notifyTesters: Boolean
+        get() {
+            return _notifyTesters ?: getGlobalConfig("APPCENTER_NOTIFY_TESTERS", "false").toBoolean()
+        }
+        set(value) {
+            _notifyTesters = value
+        }
+
     fun apps(action: Action<NamedDomainObjectContainer<AppCenterAppExtension>>) {
         action.execute(apps)
     }
@@ -64,7 +74,7 @@ open class AppCenterExtension(val project: Project) {
         return apps.firstOrNull { it.name == name }
     }
 
-    private fun getGlobalConfig(name: String, defaultValue: String) : String {
+    private fun getGlobalConfig(name: String, defaultValue: String): String {
         return try {
             System.getProperty(name)
         } catch (e: Exception) {

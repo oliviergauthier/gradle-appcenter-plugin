@@ -14,7 +14,7 @@ class AppCenterUploaderTest {
         val uploader = AppCenterUploader(api, httpClient, ownerName, appName)
 
         val file = File(apkPath)
-        uploader.upload(file, "newVersion", listOf("Sample Group", "Collaborators"))
+        uploader.upload(file, "newVersion", listOf("Sample Group", "Collaborators"), false)
     }
 
     companion object {
