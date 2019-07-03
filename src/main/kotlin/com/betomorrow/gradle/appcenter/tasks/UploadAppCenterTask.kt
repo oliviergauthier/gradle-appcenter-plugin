@@ -1,6 +1,7 @@
 package com.betomorrow.gradle.appcenter.tasks
 
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
+import com.betomorrow.gradle.appcenter.utils.truncate
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
@@ -44,7 +45,11 @@ open class UploadAppCenterTask : DefaultTask() {
             else -> {
                 ""
             }
-        }
+        }.truncate(MAX_RELEASE_NOTES_LENGTH)
+    }
+
+    companion object {
+        const val MAX_RELEASE_NOTES_LENGTH = 5000
     }
 
 }
