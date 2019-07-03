@@ -47,11 +47,13 @@ appcenter {
     ownerName = project.properties.get("ownerName", "")
     distributionGroups = ["My Distribution Group"]
     releaseNotes = "A Sample Upload"
+    notifyTesters = false
     apps {
         dev {
             dimension = "environment"
             appName = "GradleSample Dev"
             appCenterId = "8f780f3a-2756-445a-a9f3-77271f6f9ddc"
+            notifyTesters = true
         }
         prodRelease {
             appName = "SampleApp"

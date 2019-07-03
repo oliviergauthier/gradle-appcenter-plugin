@@ -12,11 +12,11 @@ class AppCenterUploader(
     val appName: String
 ) {
 
-    fun upload(file: File, changeLog: String, destinationNames: List<String>) {
-        upload(file, changeLog, destinationNames) { }
+    fun upload(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean) {
+        upload(file, changeLog, destinationNames, notifyTesters) { }
     }
 
-    fun upload(file: File, changeLog: String, destinationNames: List<String>, logger: (String) -> Unit) {
+    fun upload(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean, logger: (String) -> Unit) {
         logger("Step 1/4 : Prepare Release")
         val prepareResponse = apiClient.prepare(ownerName, appName).execute()
         if (!prepareResponse.isSuccessful) {
@@ -52,6 +52,7 @@ class AppCenterUploader(
         val request = DistributeRequest()
         request.destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList()
         request.releaseNotes = changeLog
+        request.notifyTesters = notifyTesters
 
         val distributeResponse = apiClient.distribute(ownerName, appName, committed.releaseId, request).execute()
         if (!distributeResponse.isSuccessful) {

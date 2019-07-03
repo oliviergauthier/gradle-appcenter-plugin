@@ -13,6 +13,8 @@ open class UploadAppCenterTask : DefaultTask() {
     lateinit var apiToken: String
     lateinit var ownerName: String
     lateinit var appName: String
+    var notifyTesters: Boolean = false
+
     var distributionGroups: List<String> = emptyList()
 
     lateinit var fileProvider: () -> File
@@ -25,7 +27,7 @@ open class UploadAppCenterTask : DefaultTask() {
     fun upload() {
         logger.start("AppCenter Upload", "Step 0/4")
         val uploader = AppCenterUploaderFactory().create(apiToken, ownerName, appName)
-        uploader.upload(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups) {
+        uploader.upload(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             logger.progress(it)
         }
         logger.completed("AppCenter Upload completed", false)

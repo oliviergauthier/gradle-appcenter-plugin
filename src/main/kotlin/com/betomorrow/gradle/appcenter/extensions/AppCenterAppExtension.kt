@@ -10,6 +10,8 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
 
     private var _releaseNotes: Any? = null
 
+    private var _notifyTester: Boolean? = null
+
     var dimension: String? = null
 
     lateinit var appName: String
@@ -41,12 +43,20 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
             this._distributionGroups = value
         }
 
-    var releaseNotes : Any?
+    var releaseNotes: Any
         get() {
-            return _releaseNotes?: parent.releaseNotes
+            return _releaseNotes ?: parent.releaseNotes
         }
         set(value) {
             this._releaseNotes = value
+        }
+
+    var notifyTesters: Boolean
+        get() {
+            return _notifyTester ?: parent.notifyTesters
+        }
+        set (value) {
+            _notifyTester = value
         }
 
 
@@ -58,7 +68,7 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
         this.appName = appName
     }
 
-    fun appCenterId(id : String) {
+    fun appCenterId(id: String) {
         this.appCenterId = id
     }
 
