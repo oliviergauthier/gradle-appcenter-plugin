@@ -8,8 +8,8 @@ class OkHttpFactory {
 
     fun create(debug: Boolean) : OkHttpClient {
         val builder = OkHttpClient().newBuilder()
-        builder.readTimeout(10, TimeUnit.SECONDS)
-        builder.connectTimeout(5, TimeUnit.SECONDS)
+        builder.readTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        builder.connectTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
 
         if (debug) {
             val interceptor = HttpLoggingInterceptor()
@@ -20,4 +20,8 @@ class OkHttpFactory {
         return builder.build()
     }
 
+    companion object {
+
+        const val DEFAULT_TIMEOUT_SECONDS: Long = 20
+    }
 }
