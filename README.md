@@ -60,7 +60,7 @@ android {
 
 appcenter {
     apiToken = "XXXXXXXX"                       // Api Token from AppCenter user profile
-    ownerName = "ACME"                          // Owner Name of the AppCenter Application
+    ownerName = "ACME"                          // Owner name from AppCenter user profile
     distributionGroups = ["Beta"]               // Name of the AppCenter Distribution Group
     releaseNotes = file("../changelog.md")      // Can be a file or text
     notifyTesters = true                        // Send mail to testers
@@ -74,7 +74,7 @@ appcenter {
             appName = "GradleSample-Beta"
         }
         prodRelease {                           // When no dimension is provided, this name match the full variant name
-            appName = "GradleSample"
+            appName = "GradleSample"            // From app url: https://appcenter.ms/users/{ownerName}/apps/{appName}
         }
     }
 }
