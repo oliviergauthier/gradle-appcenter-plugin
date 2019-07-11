@@ -60,7 +60,7 @@ android {
 
 appcenter {
     apiToken = "XXXXXXXX"                       // Api Token from AppCenter user profile
-    ownerName = "ACME"                          // Owner Name of the AppCenter Application
+    ownerName = "ACME"                          // Owner Name from AppCenter Application (see following note)
     distributionGroups = ["Beta"]               // Name of the AppCenter Distribution Group
     releaseNotes = file("../changelog.md")      // Can be a file or text
     notifyTesters = true                        // Send mail to testers
@@ -74,12 +74,14 @@ appcenter {
             appName = "GradleSample-Beta"
         }
         prodRelease {                           // When no dimension is provided, this name match the full variant name
-            appName = "GradleSample"
+            appName = "GradleSample"            // Application Name from AppCenter (see following note)
         }
     }
 }
 
 ```
+**Note** : `ownerName` and `appName` can be found from AppCenter application url (`https://appcenter.ms/users/{ownerName}/apps/{appName}`) 
+
 
 The plugin will create 3 tasks :
 
@@ -122,3 +124,17 @@ appcenter {
 - `APPCENTER_DISTRIBUTION_GROUPS` : Comma separated list of distribution groups 
 - `APPCENTER_RELEASE_NOTES` : Release notes in Markdown format
 - `APPCENTER_NOTIFY_TESTERS` : Notify testers
+
+## Timeouts
+By default plugin set timeouts to 60 seconds. You can override them with the following environment variables :
+- http.timeout.connect
+- http.timeout.read
+- http.timeout.write
+
+
+# Common mistakes
+You have integrated the plugin and you didn't found generated tasks ?
+
+- When using dimension parameter, it must match an android Flavor's dimension. The generated tasks will be `appCenterUpload{FLAVOR}Debug` and `appCenterUpload{FLAVOR}Release`
+- `appcenter { }` block must be declared outside the `android { }` one.
+- You can't upload apk and have an http error ? Check the `appName` it must match application url (`https://appcenter.ms/users/{ownerName}/apps/{appName}`)
