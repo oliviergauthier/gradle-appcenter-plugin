@@ -26,7 +26,7 @@ open class UploadAppCenterTask : DefaultTask() {
     @TaskAction
     fun upload() {
         logger.start("AppCenter Upload", "Step 0/4")
-        val uploader = AppCenterUploaderFactory().create(apiToken, ownerName, appName)
+        val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
         uploader.upload(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             logger.progress(it)
         }

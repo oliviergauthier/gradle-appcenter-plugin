@@ -1,10 +1,14 @@
 package com.betomorrow.gradle.appcenter.infra
 
-class AppCenterUploaderFactory {
+import org.gradle.api.Project
+
+class AppCenterUploaderFactory(
+    private val project: Project
+) {
 
     fun create(apiToken: String, ownerName: String, appName: String): AppCenterUploader {
-        val api = AppCenterAPIFactory().create(apiToken, true)
-        val httpClient = OkHttpFactory().create(true)
+        val api = AppCenterAPIFactory(project).create(apiToken, true)
+        val httpClient = OkHttpBuilder(project).logger(true).build()
         return AppCenterUploader(api, httpClient, ownerName, appName)
     }
 

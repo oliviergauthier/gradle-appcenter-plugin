@@ -20,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.6"
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.8"
     }
 }
 
@@ -126,11 +126,12 @@ appcenter {
 - `APPCENTER_NOTIFY_TESTERS` : Notify testers
 
 ## Timeouts
-By default plugin set timeouts to 60 seconds. You can override them with the following environment variables :
+By default plugin set timeouts to 60 seconds. You can override them with the following properties :
 - http.timeout.connect
 - http.timeout.read
 - http.timeout.write
 
+You can define those properties in your local `gradle.properties` or global `~/.gradle/gradle.properties`
 
 # Common mistakes
 You have integrated the plugin and you didn't found generated tasks ?
