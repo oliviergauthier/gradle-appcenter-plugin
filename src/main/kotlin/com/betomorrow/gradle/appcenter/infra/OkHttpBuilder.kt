@@ -57,7 +57,7 @@ class OkHttpBuilder(
     }
 
     private fun getEnvVar(propertyName: String): Long? {
-        return System.getenv(propertyName).replace(".", "_").toLongOrNull()
+        return System.getenv(propertyName)?.replace(".", "_")?.toLongOrNull()
     }
 
     companion object {
