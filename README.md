@@ -118,6 +118,9 @@ appcenter {
 }
 ```
 
+## Prerequisite
+- com.android.tools.build:gradle >= 3.3.0
+
 ## Use Environment Variables (for CI use)
 - `APPCENTER_API_TOKEN` : AppCenter API token
 - `APPCENTER_OWNER_NAME` : Owner name
