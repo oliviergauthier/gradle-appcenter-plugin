@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.gradle.api.Project
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 class OkHttpBuilder(
     private val project: Project
@@ -24,7 +24,7 @@ class OkHttpBuilder(
         return this
     }
 
-    fun addInterceptor(interceptor: (Interceptor.Chain) ->  Response): OkHttpBuilder {
+    fun addInterceptor(interceptor: (Interceptor.Chain) -> Response): OkHttpBuilder {
         interceptors.add(LambdaInterceptor(interceptor))
         return this
     }
@@ -32,9 +32,9 @@ class OkHttpBuilder(
     fun build(): OkHttpClient {
         val builder = OkHttpClient().newBuilder()
 
-        builder.connectTimeout(getTimeout(CONNECT_TIMEOUT_ENV_NAME))
-        builder.readTimeout(getTimeout(READ_TIMEOUT_ENV_NAME))
-        builder.writeTimeout(getTimeout(WRITE_TIMEOUT_ENV_NAME))
+        builder.connectTimeout(getTimeout(CONNECT_TIMEOUT_ENV_NAME), TimeUnit.SECONDS)
+        builder.readTimeout(getTimeout(READ_TIMEOUT_ENV_NAME), TimeUnit.SECONDS)
+        builder.writeTimeout(getTimeout(WRITE_TIMEOUT_ENV_NAME), TimeUnit.SECONDS)
 
         if (logger) {
             val interceptor = HttpLoggingInterceptor()
@@ -47,13 +47,12 @@ class OkHttpBuilder(
         return builder.build()
     }
 
-    private fun getTimeout(timeoutName: String): Duration {
-        val seconds = getProperty(timeoutName) ?: getEnvVar(timeoutName) ?: DEFAULT_TIMEOUT
-        return Duration.ofSeconds(seconds)
+    private fun getTimeout(timeoutName: String): Long {
+        return getProperty(timeoutName) ?: getEnvVar(timeoutName) ?: DEFAULT_TIMEOUT
     }
 
     private fun getProperty(propertyName: String): Long? {
-        return project.properties.getOrDefault(propertyName, null) as Long?
+        return project.properties.getOrDefault(propertyName, null).toString().toLongOrNull()
     }
 
     private fun getEnvVar(propertyName: String): Long? {
@@ -70,7 +69,7 @@ class OkHttpBuilder(
 }
 
 class LambdaInterceptor(
-    private val lambda: (Interceptor.Chain) ->  Response
+    private val lambda: (Interceptor.Chain) -> Response
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
