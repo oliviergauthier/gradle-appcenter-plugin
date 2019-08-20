@@ -45,24 +45,25 @@ class AppCenterPlugin : Plugin<Project> {
 
         appCenterApp?.let {
 
-            val packagesTask = variant.packageApplicationProvider.get()
+            val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
+            val assembleTask = variant.assembleProvider.get()
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
                     project.tasks.register(
                         "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
-                    ) { t ->
-                        t.group = APP_CENTER_PLUGIN_GROUP
-                        t.description = "Upload apk to AppCenter"
+                    ) { uploadTask ->
+                        uploadTask.group = APP_CENTER_PLUGIN_GROUP
+                        uploadTask.description = "Upload apk to AppCenter"
 
-                        t.apiToken = appCenterApp.apiToken
-                        t.appName = appCenterApp.appName
-                        t.distributionGroups = appCenterApp.distributionGroups
-                        t.ownerName = appCenterApp.ownerName
-                        t.fileProvider = { File(packagesTask.outputDirectory, output.outputFileName) }
-                        t.releaseNotes = appCenterApp.releaseNotes
-                        t.notifyTesters = appCenterApp.notifyTesters
+                        uploadTask.apiToken = appCenterApp.apiToken
+                        uploadTask.appName = appCenterApp.appName
+                        uploadTask.distributionGroups = appCenterApp.distributionGroups
+                        uploadTask.ownerName = appCenterApp.ownerName
+                        uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
+                        uploadTask.releaseNotes = appCenterApp.releaseNotes
+                        uploadTask.notifyTesters = appCenterApp.notifyTesters
 
-                        t.dependsOn(packagesTask)
+                        uploadTask.dependsOn(assembleTask)
                     }
                 }
             }
