@@ -18,10 +18,10 @@ interface AppCenterAPI {
      * 'https://api.appcenter.ms/v0.1/apps/{ownerName}/{appName}/release_uploads'
      */
     @POST("apps/{ownerName}/{appName}/release_uploads")
-    fun prepare(
+    fun prepareReleaseUpload(
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String
-    ): Call<PrepareResponse>
+    ): Call<PrepareReleaseUploadResponse>
 
     /**
      * curl -X PATCH
@@ -32,12 +32,12 @@ interface AppCenterAPI {
      * 'https://api.appcenter.ms/v0.1/apps/{ownerName/{appName}/release_uploads/{upload_id}'
      */
     @PATCH("apps/{ownerName}/{appName}/release_uploads/{uploadId}")
-    fun commit(
+    fun commitReleaseUpload(
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String,
         @Path("uploadId") uploadId: String,
-        @Body status : CommitRequest
-    ) : Call<CommitResponse>
+        @Body status : CommitReleaseUploadRequest
+    ) : Call<CommitReleaseUploadResponse>
 
     /**
      * curl -X PATCH
@@ -54,9 +54,40 @@ interface AppCenterAPI {
         @Path("releaseId") releaseId: String,
         @Body request: DistributeRequest
     ) : Call<Void>
+
+    /**
+     * curl
+     * -X POST
+     * --header 'Content-Type: application/json'
+     * --header 'Accept: application/json'
+     * --header 'X-API-Token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+     * 'https://api.appcenter.ms/v0.1/apps/{ownerName}/{appName}/symbol_uploads'
+     */
+    @POST("apps/{ownerName}/{appName}/symbol_uploads")
+    fun prepareSymbolUpload(
+        @Path("ownerName") ownerName: String,
+        @Path("appName") appName: String,
+        @Body request: PrepareSymbolUploadRequest
+    ): Call<PrepareSymbolUploadResponse>
+
+    /**
+     * curl -X PATCH
+     * --header 'Content-Type: application/json'
+     * --header 'Accept: application/json'
+     * --header 'X-API-Token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+     * -d '{ "status": "committed"  }'
+     * 'https://api.appcenter.ms/v0.1/apps/{ownerName/{appName}/symbol_uploads/{uploadId}'
+     */
+    @PATCH("apps/{ownerName}/{appName}/symbol_uploads/{uploadId}")
+    fun commitSymbolUpload(
+        @Path("ownerName") ownerName: String,
+        @Path("appName") appName: String,
+        @Path("uploadId") uploadId: String,
+        @Body status : CommitSymbolUploadRequest
+    ) : Call<CommitSymbolUploadResponse>
 }
 
-open class PrepareResponse(
+open class PrepareReleaseUploadResponse(
     @SerializedName("upload_id") val uploadId: String,
     @SerializedName("upload_url") val uploadUrl: String,
     @SerializedName("asset_id") val assetId: String?,
@@ -64,13 +95,35 @@ open class PrepareResponse(
     @SerializedName("asset_token") val assetToken: String?
 )
 
-open class CommitRequest(
+open class CommitReleaseUploadRequest(
     val status: String
 )
 
-open class CommitResponse(
+open class CommitReleaseUploadResponse(
     @SerializedName("release_id") val releaseId: String,
     @SerializedName("release_url") val releaseUrl: String
+)
+
+open class PrepareSymbolUploadRequest(
+    @SerializedName("symbol_type") val symbolType : String,
+    @SerializedName("client_callback") val clientCallback : String? = null,
+    @SerializedName("file_name") val fileName: String? = null,
+    @SerializedName("build") val build : String? = null,
+    @SerializedName("version") val version: String? = null
+)
+
+open class PrepareSymbolUploadResponse(
+    @SerializedName("symbol_upload_id") val symbolUploadId : String,
+    @SerializedName("upload_url") val uploadUrl : String,
+    @SerializedName("expiration_date") val expirationDate: String? = null
+)
+
+open class CommitSymbolUploadRequest(
+    val status: String
+)
+
+open class CommitSymbolUploadResponse(
+    @SerializedName("symbol_upload_id") val symbolUploadId: String
 )
 
 open class DistributeRequest(

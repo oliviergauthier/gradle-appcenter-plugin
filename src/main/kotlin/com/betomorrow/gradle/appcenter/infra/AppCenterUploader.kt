@@ -1,9 +1,7 @@
 package com.betomorrow.gradle.appcenter.infra
 
 import okhttp3.*
-import org.gradle.internal.logging.progress.ProgressLogger
 import java.io.File
-import kotlin.math.log
 
 class AppCenterUploader(
     val apiClient: AppCenterAPI,
@@ -12,24 +10,24 @@ class AppCenterUploader(
     val appName: String
 ) {
 
-    fun upload(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean) {
-        upload(file, changeLog, destinationNames, notifyTesters) { }
+    fun uploadApk(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean) {
+        uploadApk(file, changeLog, destinationNames, notifyTesters) { }
     }
 
-    fun upload(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean, logger: (String) -> Unit) {
-        logger("Step 1/4 : Prepare Release")
-        val prepareResponse = apiClient.prepare(ownerName, appName).execute()
+    fun uploadApk(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean, logger: (String) -> Unit) {
+        logger("Step 1/4 : Prepare Release Upload")
+        val prepareResponse = apiClient.prepareReleaseUpload(ownerName, appName).execute()
         if (!prepareResponse.isSuccessful) {
             throw AppCenterUploaderException(
-                "Can't prepare release, code=${prepareResponse.code()}, " +
+                "Can't prepare release upload, code=${prepareResponse.code()}, " +
                         "reason=${prepareResponse.errorBody()?.string()}"
             )
         }
 
         val preparedUpload = prepareResponse.body()!!
 
-        logger("Step 2/4 : Upload file")
-        val uploadResponse = doUpload(preparedUpload.uploadUrl, file, logger).execute()
+        logger("Step 2/4 : Upload Release file")
+        val uploadResponse = doUploadApk(preparedUpload.uploadUrl, file, logger).execute()
         if (!uploadResponse.isSuccessful) {
             throw AppCenterUploaderException(
                 "Can't upload APK, code=${uploadResponse.code()}, " +
@@ -38,8 +36,8 @@ class AppCenterUploader(
         }
 
         logger("Step 3/4 : Commit release")
-        val commitRequest = CommitRequest("committed")
-        val commitResponse = apiClient.commit(ownerName, appName, preparedUpload.uploadId, commitRequest).execute()
+        val commitRequest = CommitReleaseUploadRequest("committed")
+        val commitResponse = apiClient.commitReleaseUpload(ownerName, appName, preparedUpload.uploadId, commitRequest).execute()
         if (!commitResponse.isSuccessful) {
             throw AppCenterUploaderException(
                 "Can't commit release, code=${commitResponse.code()}, " +
@@ -63,13 +61,50 @@ class AppCenterUploader(
         }
     }
 
-    private fun doUpload(uploadUrl: String, file: File, logger: (String) -> Unit): Call {
+    fun uploadSymbols(mappingFile: File, versionName: String, versionCode : String, logger: (String) -> Unit) {
+        logger("Step 1/3 : Prepare Symbol")
+        val prepareRequest = PrepareSymbolUploadRequest(
+            symbolType = "AndroidProguard",
+            fileName = mappingFile.name,
+            version = versionName,
+            build = versionCode
+        )
+        val prepareResponse = apiClient.prepareSymbolUpload(ownerName, appName, prepareRequest).execute()
+        if (!prepareResponse.isSuccessful) {
+            throw AppCenterUploaderException(
+                "Can't prepare symbol upload, code=${prepareResponse.code()}, " +
+                        "reason=${prepareResponse.errorBody()?.string()}"
+            )
+        }
+
+        val preparedUpload = prepareResponse.body()!!
+
+        logger("Step 2/3 : Upload Symbol")
+        val uploadResponse = doUploadSymbol(preparedUpload.uploadUrl, mappingFile, logger).execute()
+        if (!uploadResponse.isSuccessful) {
+            throw AppCenterUploaderException(
+                "Can't upload mapping, code=${uploadResponse.code()}, " +
+                        "reason=${uploadResponse.body()?.string()}"
+            )
+        }
+
+        logger("Step 3/3 : Commit Symbol")
+        val commitRequest = CommitSymbolUploadRequest("committed")
+        val commitResponse = apiClient.commitSymbolUpload(ownerName, appName, preparedUpload.symbolUploadId, commitRequest).execute()
+        if (!commitResponse.isSuccessful) {
+            throw AppCenterUploaderException(
+                "Can't commit symbol, code=${commitResponse.code()}, " +
+                        "reason=${commitResponse.errorBody()?.string()}"
+            )
+        }
+    }
+
+    private fun doUploadApk(uploadUrl: String, file: File, logger: (String) -> Unit): Call {
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
                 "ipa", file.name,
                 ProgressRequestBody(file, "application/octet-stream") { current, total ->
-                    //                    print("Current $current / $total")
                     val progress : Int = ((current.toDouble() / total) * 100).toInt()
                     logger("Step 2/4 : Upload apk ($progress %)")
                 }
@@ -83,6 +118,18 @@ class AppCenterUploader(
 
         return okHttpClient.newCall(request)
     }
+
+    private fun doUploadSymbol(uploadUrl: String, file: File, logger: (String) -> Unit): Call {
+        val request = Request.Builder()
+            .url(uploadUrl)
+            .addHeader("x-ms-blob-type", "BlockBlob")
+            .put(RequestBody.create(MediaType.parse("text/plain; charset=UTF-8"), file))
+            .build()
+
+        return okHttpClient.newCall(request)
+    }
+
+
 
 }
 

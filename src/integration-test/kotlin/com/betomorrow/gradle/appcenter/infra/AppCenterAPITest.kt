@@ -1,7 +1,6 @@
 package com.betomorrow.gradle.appcenter.infra
 
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.jupiter.api.Test
 
 class AppCenterAPITest {
 
@@ -10,7 +9,7 @@ class AppCenterAPITest {
         val project = ProjectBuilder.builder().build()
         val api = AppCenterAPIFactory(project).create(AppCenterUploaderTest.apiToken, true)
 
-        val result = api.prepare(ownerName, appName).execute().body()
+        val result = api.prepareReleaseUpload(ownerName, appName).execute().body()
         println(result)
     }
 

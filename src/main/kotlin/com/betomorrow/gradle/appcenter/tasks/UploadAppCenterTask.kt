@@ -13,24 +13,38 @@ open class UploadAppCenterTask : DefaultTask() {
     lateinit var apiToken: String
     lateinit var ownerName: String
     lateinit var appName: String
+    lateinit var versionName: String
+    var versionCode: Int = 0
     var notifyTesters: Boolean = false
 
     var distributionGroups: List<String> = emptyList()
 
     lateinit var fileProvider: () -> File
+    lateinit var mappingFileProvider: () -> File?
     var releaseNotes: Any? = null
 
-    private var logger = services[ProgressLoggerFactory::class.java]
-        .newOperation("AppCenter")
+    private var loggerFactory = services[ProgressLoggerFactory::class.java]
+
 
     @TaskAction
     fun upload() {
-        logger.start("AppCenter Upload", "Step 0/4")
+        val loggerRelease = loggerFactory.newOperation("AppCenter")
+        loggerRelease.start("AppCenter Upload apk", "Step 0/4")
         val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
-        uploader.upload(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
-            logger.progress(it)
+        uploader.uploadApk(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
+            loggerRelease.progress(it)
         }
-        logger.completed("AppCenter Upload completed", false)
+        loggerRelease.completed("AppCenter Upload completed", false)
+
+        val mappingFile = mappingFileProvider()
+        if (mappingFile != null){
+            val loggerMapping = loggerFactory.newOperation("AppCenter")
+            loggerMapping.start("AppCenter Upload mapping file", "Step 0/4")
+            uploader.uploadSymbols(mappingFile, versionName, versionCode.toString()) {
+                loggerMapping.progress(it)
+            }
+            loggerMapping.completed("AppCenter Upload mapping completed", false)
+        }
     }
 
     private fun toReleaseNotes(releaseNotes: Any?): String {

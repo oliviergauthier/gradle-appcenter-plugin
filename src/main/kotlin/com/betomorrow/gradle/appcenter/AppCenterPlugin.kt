@@ -22,11 +22,11 @@ class AppCenterPlugin : Plugin<Project> {
                 val androidExtension = extensions.getByName("android") as AppExtension
                 val appCenterExtension = extensions.getByName(APP_CENTER_EXTENSION_NAME) as AppCenterExtension
                 androidExtension.applicationVariants.whenObjectAdded { variant ->
-                    handleVariant(variant, appCenterExtension, project)
+                    handleVariant(variant, appCenterExtension, p)
                 }
 
                 androidExtension.applicationVariants.forEach { variant ->
-                    handleVariant(variant, appCenterExtension, project)
+                    handleVariant(variant, appCenterExtension, p)
                 }
             }
 
@@ -47,6 +47,8 @@ class AppCenterPlugin : Plugin<Project> {
 
             val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
             val assembleTask = variant.assembleProvider.get()
+            val mappingFile = variant.mappingFile
+
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
                     project.tasks.register(
@@ -62,6 +64,10 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
                         uploadTask.releaseNotes = appCenterApp.releaseNotes
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
+
+                        uploadTask.mappingFileProvider = { mappingFile }
+                        uploadTask.versionName = variant.versionName
+                        uploadTask.versionCode = variant.versionCode
 
                         uploadTask.dependsOn(assembleTask)
                     }

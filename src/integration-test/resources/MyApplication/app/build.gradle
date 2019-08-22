@@ -17,9 +17,26 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "environment"
+    productFlavors {
+        alpha {
+            dimension "environment"
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        beta {
+            dimension "environment"
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
+        }
+        prod {
+            dimension "environment"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,7 +49,12 @@ appcenter {
     releaseNotes = "A Sample Upload"
     notifyTesters = false
     apps {
-        release {
+        alpha {
+            dimension = "environment"
+            appName = "GradleSample"
+        }
+        beta {
+            dimension = "environment"
             appName = "GradleSample"
         }
     }
