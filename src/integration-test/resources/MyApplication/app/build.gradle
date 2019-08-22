@@ -17,23 +17,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    flavorDimensions "environment"
-    productFlavors {
-        dev {
-            dimension "environment"
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
-        }
-        demo {
-            dimension "environment"
-            applicationIdSuffix ".beta"
-            versionNameSuffix "-beta"
-        }
-        prod {
-            dimension "environment"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -45,17 +28,12 @@ android {
 appcenter {
     apiToken = project.properties.get("apiToken", "")
     ownerName = project.properties.get("ownerName", "")
-    distributionGroups = ["My Distribution Group"]
+    distributionGroups = ["Collaborators"]
     releaseNotes = "A Sample Upload"
     notifyTesters = false
     apps {
-        dev {
-            dimension = "environment"
-            appName = "GradleSample Dev"
-            notifyTesters = true
-        }
-        prodRelease {
-            appName = "SampleApp"
+        release {
+            appName = "GradleSample"
         }
     }
 }
