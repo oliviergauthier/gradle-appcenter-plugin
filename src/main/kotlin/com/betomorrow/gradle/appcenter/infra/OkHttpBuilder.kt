@@ -11,8 +11,8 @@ class OkHttpBuilder(
     private val project: Project
 ) {
 
-    var logger = false
-    var interceptors = mutableListOf<Interceptor>()
+    private var logger = false
+    private val interceptors = mutableListOf<Interceptor>()
 
     fun logger(enable: Boolean): OkHttpBuilder {
         logger = enable

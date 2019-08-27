@@ -36,8 +36,8 @@ interface AppCenterAPI {
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String,
         @Path("uploadId") uploadId: String,
-        @Body status : CommitReleaseUploadRequest
-    ) : Call<CommitReleaseUploadResponse>
+        @Body status: CommitReleaseUploadRequest
+    ): Call<CommitReleaseUploadResponse>
 
     /**
      * curl -X PATCH
@@ -53,7 +53,7 @@ interface AppCenterAPI {
         @Path("appName") appName: String,
         @Path("releaseId") releaseId: String,
         @Body request: DistributeRequest
-    ) : Call<Void>
+    ): Call<Void>
 
     /**
      * curl
@@ -83,11 +83,11 @@ interface AppCenterAPI {
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String,
         @Path("uploadId") uploadId: String,
-        @Body status : CommitSymbolUploadRequest
-    ) : Call<CommitSymbolUploadResponse>
+        @Body status: CommitSymbolUploadRequest
+    ): Call<CommitSymbolUploadResponse>
 }
 
-open class PrepareReleaseUploadResponse(
+class PrepareReleaseUploadResponse(
     @SerializedName("upload_id") val uploadId: String,
     @SerializedName("upload_url") val uploadUrl: String,
     @SerializedName("asset_id") val assetId: String?,
@@ -95,59 +95,59 @@ open class PrepareReleaseUploadResponse(
     @SerializedName("asset_token") val assetToken: String?
 )
 
-open class CommitReleaseUploadRequest(
+class CommitReleaseUploadRequest(
     val status: String
 )
 
-open class CommitReleaseUploadResponse(
+class CommitReleaseUploadResponse(
     @SerializedName("release_id") val releaseId: String,
     @SerializedName("release_url") val releaseUrl: String
 )
 
-open class PrepareSymbolUploadRequest(
-    @SerializedName("symbol_type") val symbolType : String,
-    @SerializedName("client_callback") val clientCallback : String? = null,
+class PrepareSymbolUploadRequest(
+    @SerializedName("symbol_type") val symbolType: String,
+    @SerializedName("client_callback") val clientCallback: String? = null,
     @SerializedName("file_name") val fileName: String? = null,
-    @SerializedName("build") val build : String? = null,
+    @SerializedName("build") val build: String? = null,
     @SerializedName("version") val version: String? = null
 )
 
-open class PrepareSymbolUploadResponse(
-    @SerializedName("symbol_upload_id") val symbolUploadId : String,
-    @SerializedName("upload_url") val uploadUrl : String,
+class PrepareSymbolUploadResponse(
+    @SerializedName("symbol_upload_id") val symbolUploadId: String,
+    @SerializedName("upload_url") val uploadUrl: String,
     @SerializedName("expiration_date") val expirationDate: String? = null
 )
 
-open class CommitSymbolUploadRequest(
+class CommitSymbolUploadRequest(
     val status: String
 )
 
-open class CommitSymbolUploadResponse(
+class CommitSymbolUploadResponse(
     @SerializedName("symbol_upload_id") val symbolUploadId: String
 )
 
-open class DistributeRequest(
-    @SerializedName("distribution_group_name") var distributionGroupName: String? = null,
-    @SerializedName("distribution_group_id") var distributionGroupId: String? = null,
-    @SerializedName("destination_name") var destinationName: String? = null,
-    @SerializedName("destination_id") var destinationId: String? = null,
-    @SerializedName("destination_type") var destinationType: String? = null,
-    @SerializedName("release_notes") var releaseNotes: String? = null,
-    @SerializedName("mandatory_update") var mandatoryUpdate: Boolean = false,
-    @SerializedName("destinations") var destinations: List<Destination>? = null,
-    @SerializedName("build") var build: Build? = null,
-    @SerializedName("notify_testers") var notifyTesters: Boolean = false
+class DistributeRequest(
+    @SerializedName("distribution_group_name") val distributionGroupName: String? = null,
+    @SerializedName("distribution_group_id") val distributionGroupId: String? = null,
+    @SerializedName("destination_name") val destinationName: String? = null,
+    @SerializedName("destination_id") val destinationId: String? = null,
+    @SerializedName("destination_type") val destinationType: String? = null,
+    @SerializedName("release_notes") val releaseNotes: String? = null,
+    @SerializedName("mandatory_update") val mandatoryUpdate: Boolean = false,
+    @SerializedName("destinations") val destinations: List<Destination>? = null,
+    @SerializedName("build") val build: Build? = null,
+    @SerializedName("notify_testers") val notifyTesters: Boolean = false
 ) {
 
-    open class Destination(
-        @SerializedName("name") var name: String? = null,
-        @SerializedName("id") var id: String? = null
+    class Destination(
+        @SerializedName("name") val name: String? = null,
+        @SerializedName("id") val id: String? = null
     )
 
-    open class Build(
-        @SerializedName("branch") var branch: String? = null,
-        @SerializedName("commit_hash") var commitHash: String? = null,
-        @SerializedName("commit_message") var commitMessage: String? = null
+    class Build(
+        @SerializedName("branch") val branch: String? = null,
+        @SerializedName("commit_hash") val commitHash: String? = null,
+        @SerializedName("commit_message") val commitMessage: String? = null
     )
 
 }

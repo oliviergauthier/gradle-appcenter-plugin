@@ -37,7 +37,7 @@ open class UploadAppCenterTask : DefaultTask() {
         loggerRelease.completed("AppCenter Upload completed", false)
 
         val mappingFile = mappingFileProvider()
-        if (mappingFile != null){
+        if (mappingFile != null) {
             val loggerMapping = loggerFactory.newOperation("AppCenter")
             loggerMapping.start("AppCenter Upload mapping file", "Step 0/4")
             uploader.uploadSymbols(mappingFile, versionName, versionCode.toString()) {
@@ -49,18 +49,10 @@ open class UploadAppCenterTask : DefaultTask() {
 
     private fun toReleaseNotes(releaseNotes: Any?): String {
         return when (releaseNotes) {
-            is File -> {
-                return releaseNotes.readText()
-            }
-            is Path -> {
-                return releaseNotes.toFile().readText()
-            }
-            is String -> {
-                releaseNotes
-            }
-            else -> {
-                ""
-            }
+            is File -> releaseNotes.readText()
+            is Path -> releaseNotes.toFile().readText()
+            is String -> releaseNotes
+            else -> releaseNotes?.toString().orEmpty()
         }.truncate(MAX_RELEASE_NOTES_LENGTH)
     }
 
