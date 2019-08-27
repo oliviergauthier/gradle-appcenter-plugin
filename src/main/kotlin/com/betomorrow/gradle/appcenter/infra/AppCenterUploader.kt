@@ -4,10 +4,10 @@ import okhttp3.*
 import java.io.File
 
 class AppCenterUploader(
-    val apiClient: AppCenterAPI,
-    val okHttpClient: OkHttpClient,
-    val ownerName: String,
-    val appName: String
+    private val apiClient: AppCenterAPI,
+    private val okHttpClient: OkHttpClient,
+    private val ownerName: String,
+    private val appName: String
 ) {
 
     fun uploadApk(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean) {
@@ -47,10 +47,11 @@ class AppCenterUploader(
 
         logger("Step 4/4 : Distribute Release")
         val committed = commitResponse.body()!!
-        val request = DistributeRequest()
-        request.destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList()
-        request.releaseNotes = changeLog
-        request.notifyTesters = notifyTesters
+        val request = DistributeRequest(
+            destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList(),
+            releaseNotes = changeLog,
+            notifyTesters = notifyTesters
+        )
 
         val distributeResponse = apiClient.distribute(ownerName, appName, committed.releaseId, request).execute()
         if (!distributeResponse.isSuccessful) {
@@ -133,6 +134,4 @@ class AppCenterUploader(
 
 }
 
-class AppCenterUploaderException(message: String) : Exception(message) {
-
-}
+class AppCenterUploaderException(message: String) : Exception(message)
