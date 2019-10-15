@@ -68,6 +68,7 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.mappingFileProvider = { mappingFile }
                         uploadTask.versionName = variant.versionName
                         uploadTask.versionCode = variant.versionCode
+                        uploadTask.symbols = appCenterApp.symbols
 
                         uploadTask.dependsOn(assembleTask)
                     }
