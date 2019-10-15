@@ -18,6 +18,7 @@ open class UploadAppCenterTask : DefaultTask() {
     var notifyTesters: Boolean = false
 
     var distributionGroups: List<String> = emptyList()
+    var symbols : List<Any> = emptyList()
 
     lateinit var fileProvider: () -> File
     lateinit var mappingFileProvider: () -> File?
@@ -45,6 +46,20 @@ open class UploadAppCenterTask : DefaultTask() {
             }
             loggerMapping.completed("AppCenter Upload mapping completed", false)
         }
+
+        symbols.forEach {
+            val loggerSymbol = loggerFactory.newOperation("AppCenter")
+            loggerSymbol.start("AppCenter Upload symbol $it ", "Step 0/4")
+            try {
+                uploader.uploadSymbols(toSymbolFile(it), versionName, versionCode.toString()) {
+                    loggerSymbol.progress(it)
+                }
+                loggerSymbol.completed("AppCenter Upload symbol $it succeed", false)
+            } catch (e : Exception) {
+                loggerSymbol.completed("AppCenter Upload symbol $it failed", true)
+            }
+        }
+
     }
 
     private fun toReleaseNotes(releaseNotes: Any?): String {
@@ -54,6 +69,15 @@ open class UploadAppCenterTask : DefaultTask() {
             is String -> releaseNotes
             else -> releaseNotes?.toString().orEmpty()
         }.truncate(MAX_RELEASE_NOTES_LENGTH)
+    }
+
+    private fun toSymbolFile(symbolFile : Any): File {
+        return when (symbolFile) {
+            is File -> symbolFile
+            is Path -> symbolFile.toFile()
+            is String -> project.file(symbolFile)
+            else -> throw IllegalArgumentException("$symbolFile is not supported")
+        }
     }
 
     companion object {

@@ -7,13 +7,12 @@ import java.lang.Exception
 
 open class AppCenterExtension(val project: Project) {
 
-    var _apiToken: String? = null
-    var _ownerName: String? = null
-
-    var _distributionGroups: List<String> = emptyList()
-    var _releaseNotes: Any? = null
-
-    var _notifyTesters: Boolean? = null
+    private var _apiToken: String? = null
+    private var _ownerName: String? = null
+    private var _distributionGroups: List<String> = emptyList()
+    private var _releaseNotes: Any? = null
+    private var _notifyTesters: Boolean? = null
+    private var _symbols: List<Any> = emptyList()
 
     var apps: NamedDomainObjectContainer<AppCenterAppExtension> = project.container(AppCenterAppExtension::class.java) {
         AppCenterAppExtension(it, this)
@@ -60,6 +59,18 @@ open class AppCenterExtension(val project: Project) {
         }
         set(value) {
             _notifyTesters = value
+        }
+
+    var symbols: List<Any>
+        get() {
+            return if (!_symbols.isEmpty()) {
+                return _symbols
+            } else {
+                getGlobalConfig("APPCENTER_SYMBOLS", "").split(",")
+            }
+        }
+        set() {
+            _symbols = value
         }
 
     fun apps(action: Action<NamedDomainObjectContainer<AppCenterAppExtension>>) {

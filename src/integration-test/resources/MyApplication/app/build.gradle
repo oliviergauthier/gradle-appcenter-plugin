@@ -48,6 +48,7 @@ appcenter {
     distributionGroups = ["Collaborators"]
     releaseNotes = "A Sample Upload"
     notifyTesters = false
+    symbols = [ "symbols.zip" ]
     apps {
         alpha {
             dimension = "environment"

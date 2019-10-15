@@ -3,14 +3,11 @@ package com.betomorrow.gradle.appcenter.extensions
 open class AppCenterAppExtension(val name: String, val parent: AppCenterExtension) {
 
     private var _apiToken: String? = null
-
     private var _ownerName: String? = null
-
     private var _distributionGroups: List<String>? = null
-
     private var _releaseNotes: Any? = null
-
     private var _notifyTester: Boolean? = null
+    private var _symbols: List<Any> = emptyList()
 
     var dimension: String? = null
 
@@ -59,6 +56,13 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
             _notifyTester = value
         }
 
+    var symbols: List<Any>
+        get() {
+            return _symbols ?: parent.symbols
+        }
+        set (value) {
+            _symbols = value
+        }
 
     fun dimension(dimension: String) {
         this.dimension = dimension
