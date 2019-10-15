@@ -7,7 +7,7 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
     private var _distributionGroups: List<String>? = null
     private var _releaseNotes: Any? = null
     private var _notifyTester: Boolean? = null
-    private var _symbols: List<Any> = emptyList()
+    private var _symbols: List<Any>? = null
 
     var dimension: String? = null
 
@@ -52,7 +52,7 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
         get() {
             return _notifyTester ?: parent.notifyTesters
         }
-        set (value) {
+        set(value) {
             _notifyTester = value
         }
 
@@ -60,7 +60,7 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
         get() {
             return _symbols ?: parent.symbols
         }
-        set (value) {
+        set(value) {
             _symbols = value
         }
 

@@ -69,7 +69,7 @@ open class AppCenterExtension(val project: Project) {
                 getGlobalConfig("APPCENTER_SYMBOLS", "").split(",")
             }
         }
-        set() {
+        set(value) {
             _symbols = value
         }
 
