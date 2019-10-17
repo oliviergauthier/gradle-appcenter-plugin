@@ -20,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.13"
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.16"
     }
 }
 
@@ -89,6 +89,10 @@ The plugin will create 3 tasks :
 - appCenterUploadBetaRelease
 - appCenterUploadProdRelease
 
+To upload an apk, just run tasks assemble and appCenterUpload
+
+`./gradlew assembleAlphaRelease appCenterUploadAlphaRelease`
+
 
 ## Override properties
 
@@ -101,6 +105,7 @@ appcenter {
     distributionGroups = ["Beta"]
     releaseNotes = file("../changelog.md")
     notifyTesters = false
+    symbols = ["symbols.zip"]
     apps {      
         alpha {
             dimension = "environment"
@@ -110,6 +115,7 @@ appcenter {
             releaseNotes = "No Changes"
             appName = "GradleSample-Alpha"
             notifyTesters = true
+            symbols = ["symbols.zip"]
         }
         prodRelease {           
             appName = "GradleSample"
@@ -127,6 +133,7 @@ appcenter {
 - `APPCENTER_DISTRIBUTION_GROUPS` : Comma separated list of distribution groups 
 - `APPCENTER_RELEASE_NOTES` : Release notes in Markdown format
 - `APPCENTER_NOTIFY_TESTERS` : Notify testers
+- `APPCENTER_SYMBOLS` : Comma separated list of symbols file to upload
 
 ## Timeouts
 By default plugin set timeouts to 60 seconds. You can override them with the following properties :

@@ -70,7 +70,7 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.versionCode = variant.versionCode
                         uploadTask.symbols = appCenterApp.symbols
 
-                        uploadTask.dependsOn(assembleTask)
+                        uploadTask.mustRunAfter(assembleTask)
                     }
                 }
             }
