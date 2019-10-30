@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
+import com.betomorrow.gradle.appcenter.extensions.AppCenterAppExtension
 import com.betomorrow.gradle.appcenter.extensions.AppCenterExtension
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterTask
 import org.gradle.api.Plugin
@@ -51,30 +52,49 @@ class AppCenterPlugin : Plugin<Project> {
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
+                    val varianNameCapitalized = variant.name.capitalize()
                     project.tasks.register(
-                        "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
+                        "appCenterUpload$varianNameCapitalized", UploadAppCenterTask::class.java
                     ) { uploadTask ->
-                        uploadTask.group = APP_CENTER_PLUGIN_GROUP
                         uploadTask.description = "Upload apk to AppCenter"
-
-                        uploadTask.apiToken = appCenterApp.apiToken
-                        uploadTask.appName = appCenterApp.appName
-                        uploadTask.distributionGroups = appCenterApp.distributionGroups
-                        uploadTask.ownerName = appCenterApp.ownerName
-                        uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
-                        uploadTask.releaseNotes = appCenterApp.releaseNotes
-                        uploadTask.notifyTesters = appCenterApp.notifyTesters
-
-                        uploadTask.mappingFileProvider = { mappingFile }
-                        uploadTask.versionName = variant.versionName
-                        uploadTask.versionCode = variant.versionCode
-                        uploadTask.symbols = appCenterApp.symbols
-
+                        setupUploadTask(uploadTask, appCenterApp, outputDirectory, output, mappingFile, variant)
                         uploadTask.mustRunAfter(assembleTask)
+                    }
+
+                    project.tasks.register(
+                        "appCenterAssembleAndUpload$varianNameCapitalized", UploadAppCenterTask::class.java
+                    ) { uploadTask ->
+                        uploadTask.description = "Assemble and upload apk to AppCenter"
+                        setupUploadTask(uploadTask, appCenterApp, outputDirectory, output, mappingFile, variant)
+                        uploadTask.dependsOn(assembleTask)
                     }
                 }
             }
         }
+    }
+
+    private fun setupUploadTask(
+        uploadTask: UploadAppCenterTask,
+        appCenterApp: AppCenterAppExtension,
+        outputDirectory: File?,
+        output: ApkVariantOutput,
+        mappingFile: File?,
+        variant: ApplicationVariant
+    ) {
+        uploadTask.group = APP_CENTER_PLUGIN_GROUP
+
+        uploadTask.apiToken = appCenterApp.apiToken
+        uploadTask.appName = appCenterApp.appName
+        uploadTask.distributionGroups = appCenterApp.distributionGroups
+        uploadTask.ownerName = appCenterApp.ownerName
+        uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
+        uploadTask.releaseNotes = appCenterApp.releaseNotes
+        uploadTask.notifyTesters = appCenterApp.notifyTesters
+
+        uploadTask.mappingFileProvider = { mappingFile }
+        uploadTask.versionName = variant.versionName
+        uploadTask.versionCode = variant.versionCode
+        uploadTask.symbols = appCenterApp.symbols
     }
 
     companion object {
