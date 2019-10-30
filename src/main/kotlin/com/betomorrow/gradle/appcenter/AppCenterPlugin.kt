@@ -51,8 +51,11 @@ class AppCenterPlugin : Plugin<Project> {
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
+                    val filterIdentifiersCapitalized = output.filters
+                            .joinToString("") { filter -> filter.identifier.capitalize() }
                     project.tasks.register(
-                        "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
+                            "appCenterUpload${variant.name.capitalize()}$filterIdentifiersCapitalized",
+                            UploadAppCenterTask::class.java
                     ) { uploadTask ->
                         uploadTask.group = APP_CENTER_PLUGIN_GROUP
                         uploadTask.description = "Upload apk to AppCenter"
