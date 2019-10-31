@@ -36,7 +36,7 @@ open class AppCenterExtension(val project: Project) {
 
     var releaseNotes: Any
         get() {
-            return _releaseNotes ?: getGlobalConfig("APPCENTER__RELEASE_NOTES", "")
+            return _releaseNotes ?: getGlobalConfig("APPCENTER_RELEASE_NOTES", "")
         }
         set(value) {
             _releaseNotes = value
