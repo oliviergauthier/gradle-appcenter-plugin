@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.betomorrow.gradle'
+group 'com.babylonhealth'
 version '1.1.16'
 
 repositories {
@@ -28,7 +28,7 @@ dependencies {
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 
     testCompile 'org.assertj:assertj-core:3.11.1'
     testCompile gradleTestKit()
@@ -80,7 +80,7 @@ check.dependsOn integrationTest
 gradlePlugin {
     plugins {
         appCenterPlugin {
-            id = 'com.betomorrow.appcenter'
+            id = 'com.babylonhealth.appcenter'
             displayName = 'Gradle AppCenter Plugin'
             description = 'Plugin to upload APK to AppCenter'
             implementationClass = 'com.betomorrow.gradle.appcenter.AppCenterPlugin'
@@ -103,6 +103,19 @@ publishing {
     publications {
         pluginMaven(MavenPublication) {
             artifact sourceJar
+        }
+    }
+
+    def internalRepoUrl = System.getProperty("INTERNAL_REPO_URL")
+    if (internalRepoUrl != null) {
+        repositories {
+            maven {
+                url internalRepoUrl
+                credentials {
+                    username System.getProperty("INTERNAL_REPO_USERNAME")
+                    password System.getProperty("INTERNAL_REPO_PASSWORD")
+                }
+            }
         }
     }
 }

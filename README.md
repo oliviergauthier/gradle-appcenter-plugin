@@ -6,31 +6,14 @@
 
 This plugin allow you to upload android application to AppCenter. You can declare several applications, the plugin will take care of build variant to upload the apk on the right AppCenter application
 
-Find last version on [Gradle Repository](https://plugins.gradle.org/plugin/com.betomorrow.appcenter)
-
 ## Quick Start
-
-File : `build.gradle`
-
-```groovy
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.16"
-    }
-}
-
-```
 
 File : `app/build.gradle`
 
 ```groovy
-
-apply plugin: "com.betomorrow.appcenter"
+plugins {
+    id "com.babylonhealth.appcenter" version "1.1.16"
+}
 
 android {
     // ...
