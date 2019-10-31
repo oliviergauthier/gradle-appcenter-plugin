@@ -77,14 +77,6 @@ open class AppCenterExtension(val project: Project) {
         action.execute(apps)
     }
 
-    fun findByFlavor(name: String, dimension: String): AppCenterAppExtension? {
-        return apps.firstOrNull { it.name == name && dimension == it.dimension }
-    }
-
-    fun findByBuildVariant(name: String): AppCenterAppExtension? {
-        return apps.firstOrNull { it.name == name }
-    }
-
     private fun getGlobalConfig(name: String, defaultValue: String): String {
         return try {
             System.getProperty(name)

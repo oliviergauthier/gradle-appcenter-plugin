@@ -15,36 +15,27 @@ class AppCenterPlugin : Plugin<Project> {
 
         with(project) {
 
-            extensions.create(APP_CENTER_EXTENSION_NAME, AppCenterExtension::class.java, this)
+            val appCenterExtension = extensions.create(APP_CENTER_EXTENSION_NAME, AppCenterExtension::class.java, this)
 
-            afterEvaluate { p ->
-
+            plugins.withId("com.android.application") {
                 val androidExtension = extensions.getByName("android") as AppExtension
-                val appCenterExtension = extensions.getByName(APP_CENTER_EXTENSION_NAME) as AppCenterExtension
-                androidExtension.applicationVariants.whenObjectAdded { variant ->
-                    handleVariant(variant, appCenterExtension, p)
-                }
-
-                androidExtension.applicationVariants.forEach { variant ->
-                    handleVariant(variant, appCenterExtension, p)
+                androidExtension.applicationVariants.all { variant ->
+                    handleVariant(variant, appCenterExtension, this)
                 }
             }
-
         }
 
     }
 
     private fun handleVariant(variant: ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
 
-        val appCenterApp = variant.productFlavors.map {
-            appCenterExtension.findByFlavor(
-                it.name,
-                it.dimension
-            )
-        }.firstOrNull { it != null } ?: appCenterExtension.findByBuildVariant(variant.name)
-
-        appCenterApp?.let {
-
+        appCenterExtension.apps.matching { app ->
+            if (app.dimension != null) {
+                variant.productFlavors.any { flavor -> flavor.name == app.name && flavor.dimension == app.dimension }
+            } else {
+                app.name == variant.name
+            }
+        }.all { appCenterApp ->
             val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
             val assembleTask = variant.assembleProvider.get()
             val mappingFile = variant.mappingFile
