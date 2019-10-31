@@ -16,7 +16,7 @@ class ProgressRequestBody(
     private val listener: (Long, Long) -> Unit
 ) : RequestBody() {
 
-    private val contentLength : Long by lazy {
+    private val contentLength: Long by lazy {
         file.length()
     }
 
@@ -30,30 +30,20 @@ class ProgressRequestBody(
 
     @Throws(IOException::class)
     override fun writeTo(sink: BufferedSink) {
-        var source: Source? = null
-        try {
-            source = Okio.source(file)
-            if (source == null) {
-                return
-            }
-
+        Okio.buffer(Okio.source(file)).use { source ->
             var total: Long = 0
             var read: Long = 0
 
-            while ({read = source.read(sink.buffer(),
-                    SEGMENT_SIZE
-                ); read}() != -1L) {
+            while ({ read = source.read(sink.buffer(), SEGMENT_SIZE); read }() != -1L) {
                 total += read
-                sink.flush()
+                sink.emitCompleteSegments()
                 this.listener(total, contentLength)
             }
-        } finally {
-            Util.closeQuietly(source)
         }
     }
 
     companion object {
-        private val SEGMENT_SIZE : Long = 2048 // okio.Segment.SIZE
+        private const val SEGMENT_SIZE = 8192L // okio.Segment.SIZE
     }
 
 }
