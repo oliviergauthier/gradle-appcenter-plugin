@@ -32,7 +32,7 @@ open class UploadAppCenterTask : DefaultTask() {
         val loggerRelease = loggerFactory.newOperation("AppCenter")
         loggerRelease.start("AppCenter Upload apk", "Step 0/4")
         val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
-        uploader.uploadApk(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
+        val releaseId = uploader.uploadApk(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             loggerRelease.progress(it)
         }
         loggerRelease.completed("AppCenter Upload completed", false)
@@ -60,6 +60,7 @@ open class UploadAppCenterTask : DefaultTask() {
             }
         }
 
+        logger.lifecycle("Uploaded https://appcenter.ms/orgs/$ownerName/apps/$appName/distribute/releases/$releaseId")
     }
 
     private fun toReleaseNotes(releaseNotes: Any?): String {

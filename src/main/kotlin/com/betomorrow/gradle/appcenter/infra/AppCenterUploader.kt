@@ -14,7 +14,7 @@ class AppCenterUploader(
         uploadApk(file, changeLog, destinationNames, notifyTesters) { }
     }
 
-    fun uploadApk(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean, logger: (String) -> Unit) {
+    fun uploadApk(file: File, changeLog: String, destinationNames: List<String>, notifyTesters: Boolean, logger: (String) -> Unit): String {
         logger("Step 1/4 : Prepare Release Upload")
         val prepareResponse = apiClient.prepareReleaseUpload(ownerName, appName).execute()
         if (!prepareResponse.isSuccessful) {
@@ -60,6 +60,8 @@ class AppCenterUploader(
                         "reason=${distributeResponse.errorBody()?.string()}"
             )
         }
+
+        return committed.releaseId
     }
 
     fun uploadSymbols(mappingFile: File, versionName: String, versionCode : String, logger: (String) -> Unit) {
