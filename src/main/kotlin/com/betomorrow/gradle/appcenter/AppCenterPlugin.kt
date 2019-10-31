@@ -52,9 +52,9 @@ class AppCenterPlugin : Plugin<Project> {
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
-                    val varianNameCapitalized = variant.name.capitalize()
+                    val variantNameCapitalized = variant.name.capitalize()
                     project.tasks.register(
-                        "appCenterUpload$varianNameCapitalized", UploadAppCenterTask::class.java
+                        "appCenterUpload$variantNameCapitalized", UploadAppCenterTask::class.java
                     ) { uploadTask ->
                         uploadTask.description = "Upload apk to AppCenter"
                         setupUploadTask(uploadTask, appCenterApp, outputDirectory, output, mappingFile, variant)
@@ -62,7 +62,7 @@ class AppCenterPlugin : Plugin<Project> {
                     }
 
                     project.tasks.register(
-                        "appCenterAssembleAndUpload$varianNameCapitalized", UploadAppCenterTask::class.java
+                        "appCenterAssembleAndUpload$variantNameCapitalized", UploadAppCenterTask::class.java
                     ) { uploadTask ->
                         uploadTask.description = "Assemble and upload apk to AppCenter"
                         setupUploadTask(uploadTask, appCenterApp, outputDirectory, output, mappingFile, variant)
