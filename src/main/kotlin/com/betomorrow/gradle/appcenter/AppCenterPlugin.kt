@@ -55,7 +55,7 @@ class AppCenterPlugin : Plugin<Project> {
                         "appCenterUpload${variant.name.capitalize()}", UploadAppCenterTask::class.java
                     ) { uploadTask ->
                         uploadTask.group = APP_CENTER_PLUGIN_GROUP
-                        uploadTask.description = "Upload apk to AppCenter"
+                        uploadTask.description = "Upload ${variant.name} APK to AppCenter"
 
                         uploadTask.apiToken = appCenterApp.apiToken
                         uploadTask.appName = appCenterApp.appName
