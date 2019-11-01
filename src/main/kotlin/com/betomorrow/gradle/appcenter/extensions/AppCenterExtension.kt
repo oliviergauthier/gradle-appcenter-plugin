@@ -77,6 +77,12 @@ open class AppCenterExtension(val project: Project) {
         action.execute(apps)
     }
 
+    fun addApp(name: String, configureAction: Action<AppCenterAppExtension>) {
+        val app = AppCenterAppExtension(name, this)
+        configureAction.execute(app)
+        apps.add(app)
+    }
+
     private fun getGlobalConfig(name: String, defaultValue: String): String {
         return try {
             System.getProperty(name)
