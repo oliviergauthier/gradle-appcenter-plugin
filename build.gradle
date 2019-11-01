@@ -5,8 +5,8 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.babylonhealth'
-version '1.1.16'
+group = 'com.babylonhealth'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
