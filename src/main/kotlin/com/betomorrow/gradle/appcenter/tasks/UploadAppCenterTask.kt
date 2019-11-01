@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter.tasks
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
 import com.betomorrow.gradle.appcenter.utils.truncate
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import java.io.File
@@ -18,9 +19,9 @@ open class UploadAppCenterTask : DefaultTask() {
     var notifyTesters: Boolean = false
 
     var distributionGroups: List<String> = emptyList()
-    var symbols : List<Any> = emptyList()
+    var symbols: List<Any> = emptyList()
 
-    lateinit var fileProvider: () -> File
+    lateinit var fileProvider: Provider<File>
     lateinit var mappingFileProvider: () -> File?
     var releaseNotes: Any? = null
 
@@ -32,7 +33,7 @@ open class UploadAppCenterTask : DefaultTask() {
         val loggerRelease = loggerFactory.newOperation("AppCenter")
         loggerRelease.start("AppCenter Upload apk", "Step 0/4")
         val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
-        val releaseId = uploader.uploadApk(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
+        val releaseId = uploader.uploadApk(fileProvider.get(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             loggerRelease.progress(it)
         }
         loggerRelease.completed("AppCenter Upload completed", false)
@@ -55,7 +56,7 @@ open class UploadAppCenterTask : DefaultTask() {
                     loggerSymbol.progress(it)
                 }
                 loggerSymbol.completed("AppCenter Upload symbol $it succeed", false)
-            } catch (e : Exception) {
+            } catch (e: Exception) {
                 loggerSymbol.completed("AppCenter Upload symbol $it failed", true)
             }
         }
@@ -72,7 +73,7 @@ open class UploadAppCenterTask : DefaultTask() {
         }.truncate(MAX_RELEASE_NOTES_LENGTH)
     }
 
-    private fun toSymbolFile(symbolFile : Any): File {
+    private fun toSymbolFile(symbolFile: Any): File {
         return when (symbolFile) {
             is File -> symbolFile
             is Path -> symbolFile.toFile()

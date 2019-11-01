@@ -36,10 +36,6 @@ class AppCenterPlugin : Plugin<Project> {
                 app.name == variant.name
             }
         }.all { appCenterApp ->
-            val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
-            val assembleTask = variant.assembleProvider.get()
-            val mappingFile = variant.mappingFile
-
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
                     project.tasks.register(
@@ -52,16 +48,17 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.appName = appCenterApp.appName
                         uploadTask.distributionGroups = appCenterApp.distributionGroups
                         uploadTask.ownerName = appCenterApp.ownerName
-                        uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
+                        uploadTask.fileProvider = variant.packageApplicationProvider.map { File(it.outputDirectory, output.outputFileName) }
                         uploadTask.releaseNotes = appCenterApp.releaseNotes
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
 
+                        val mappingFile = variant.mappingFile
                         uploadTask.mappingFileProvider = { mappingFile }
                         uploadTask.versionName = variant.versionName
                         uploadTask.versionCode = variant.versionCode
                         uploadTask.symbols = appCenterApp.symbols
 
-                        uploadTask.mustRunAfter(assembleTask)
+                        uploadTask.mustRunAfter(variant.assembleProvider)
                     }
                 }
             }
