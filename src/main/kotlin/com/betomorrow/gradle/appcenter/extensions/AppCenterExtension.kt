@@ -73,6 +73,8 @@ open class AppCenterExtension(val project: Project) {
             _symbols = value
         }
 
+    var uploadMappingFiles: Boolean = true
+
     fun apps(action: Action<NamedDomainObjectContainer<AppCenterAppExtension>>) {
         action.execute(apps)
     }

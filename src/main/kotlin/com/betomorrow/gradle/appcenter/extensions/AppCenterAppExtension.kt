@@ -6,7 +6,8 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
     private var _ownerName: String? = null
     private var _distributionGroups: List<String>? = null
     private var _releaseNotes: Any? = null
-    private var _notifyTester: Boolean? = null
+    private var _notifyTesters: Boolean? = null
+    private var _uploadMappingFiles: Boolean? = null
     private var _symbols: List<Any>? = null
 
     var dimension: String? = null
@@ -50,10 +51,18 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
 
     var notifyTesters: Boolean
         get() {
-            return _notifyTester ?: parent.notifyTesters
+            return _notifyTesters ?: parent.notifyTesters
         }
         set(value) {
-            _notifyTester = value
+            _notifyTesters = value
+        }
+
+    var uploadMappingFiles: Boolean
+        get() {
+            return _uploadMappingFiles ?: parent.uploadMappingFiles
+        }
+        set(value) {
+            _uploadMappingFiles = value
         }
 
     var symbols: List<Any>
