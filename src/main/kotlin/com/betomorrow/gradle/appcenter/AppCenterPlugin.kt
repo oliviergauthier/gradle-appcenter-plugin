@@ -50,12 +50,15 @@ class AppCenterPlugin : Plugin<Project> {
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
-                    val filterIdentifiersCapitalized = output.filters
-                            .joinToString("") { filter -> filter.identifier.capitalize() }
-                    project.tasks.register(
-                            "appCenterUpload${variant.name.capitalize()}$filterIdentifiersCapitalized",
+
+                    val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalize() }
+                    val taskSuffix = "${variant.name.capitalize()}$filterIdentifiersCapitalized"
+
+                    val uploadTask = project.tasks.register(
+                            "appCenterUpload$taskSuffix",
                             UploadAppCenterTask::class.java
                     ) { uploadTask ->
+
                         uploadTask.group = APP_CENTER_PLUGIN_GROUP
                         uploadTask.description = "Upload ${variant.name} APK to AppCenter"
 
@@ -68,16 +71,24 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
 
                         if (appCenterApp.uploadMappingFiles) {
-                            val mappingFile = variant.mappingFile
-                            uploadTask.mappingFileProvider = { mappingFile }
+                            uploadTask.mappingFileProvider = { variant.mappingFile }
                         } else {
                             uploadTask.mappingFileProvider = { null }
                         }
+
                         uploadTask.versionName = variant.versionName
                         uploadTask.versionCode = variant.versionCode
                         uploadTask.symbols = appCenterApp.symbols
 
                         uploadTask.mustRunAfter(assembleTask)
+                    }
+
+                    project.tasks.register(
+                        "appCenterAssembleAndUpload$taskSuffix"
+                    ) { task ->
+                        task.group = APP_CENTER_PLUGIN_GROUP
+                        task.description = "Assemble and upload ${variant.name} APK to AppCenter"
+                        task.dependsOn(uploadTask, assembleTask)
                     }
                 }
             }
