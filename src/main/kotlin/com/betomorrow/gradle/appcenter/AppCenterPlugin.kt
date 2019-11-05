@@ -47,7 +47,6 @@ class AppCenterPlugin : Plugin<Project> {
 
             val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
             val assembleTask = variant.assembleProvider.get()
-            val mappingFile = variant.mappingFile
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
@@ -65,7 +64,12 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.releaseNotes = appCenterApp.releaseNotes
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
 
-                        uploadTask.mappingFileProvider = { mappingFile }
+                        if (appCenterApp.uploadMappingFiles) {
+                            val mappingFile = variant.mappingFile
+                            uploadTask.mappingFileProvider = { mappingFile }
+                        } else {
+                            uploadTask.mappingFileProvider = { null }
+                        }
                         uploadTask.versionName = variant.versionName
                         uploadTask.versionCode = variant.versionCode
                         uploadTask.symbols = appCenterApp.symbols
