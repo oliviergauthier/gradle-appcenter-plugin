@@ -52,8 +52,12 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.releaseNotes = appCenterApp.releaseNotes
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
 
-                        val mappingFile = variant.mappingFile
-                        uploadTask.mappingFileProvider = { mappingFile }
+                        if (appCenterExtension.uploadMappingFile) {
+                            val mappingFile = variant.mappingFile
+                            uploadTask.mappingFileProvider = { mappingFile }
+                        } else {
+                            uploadTask.mappingFileProvider = { null }
+                        }
                         uploadTask.versionName = variant.versionName
                         uploadTask.versionCode = variant.versionCode
                         uploadTask.symbols = appCenterApp.symbols

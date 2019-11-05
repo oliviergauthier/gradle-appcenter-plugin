@@ -14,6 +14,8 @@ open class AppCenterExtension(val project: Project) {
     private var _notifyTesters: Boolean? = null
     private var _symbols: List<Any> = emptyList()
 
+    var uploadMappingFile: Boolean = true
+
     var apps: NamedDomainObjectContainer<AppCenterAppExtension> = project.container(AppCenterAppExtension::class.java) {
         AppCenterAppExtension(it, this)
     }
