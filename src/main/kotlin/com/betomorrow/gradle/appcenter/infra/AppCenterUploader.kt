@@ -3,6 +3,8 @@ package com.betomorrow.gradle.appcenter.infra
 import okhttp3.*
 import java.io.File
 
+private const val RELEASE_URL_TEMPLATE = "https://appcenter.ms/orgs/%s/apps/%s/distribute/releases/%s"
+
 class AppCenterUploader(
     private val apiClient: AppCenterAPI,
     private val okHttpClient: OkHttpClient,
@@ -42,6 +44,12 @@ class AppCenterUploader(
             throw AppCenterUploaderException(
                 "Can't commit release, code=${commitResponse.code()}, " +
                         "reason=${commitResponse.errorBody()?.string()}"
+            )
+        } else {
+            println(
+                commitResponse.body()?.releaseId?.let { releaseId ->
+                    "AppCenter release url is ${RELEASE_URL_TEMPLATE.format(ownerName, appName, releaseId)}"
+                } ?: "Warning! Can't print releaseUrl - releaseId is null"
             )
         }
 
