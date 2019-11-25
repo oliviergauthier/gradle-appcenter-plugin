@@ -1,5 +1,6 @@
 package com.betomorrow.gradle.appcenter
 
+import com.android.build.VariantOutput
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
@@ -38,7 +39,7 @@ class AppCenterPlugin : Plugin<Project> {
             }
         }.all { appConfig ->
             variant.outputs.withType(ApkVariantOutput::class.java)
-                .matching { output -> output.outputType == ApkVariantOutput.MAIN || output.baseName.contains("-universal-") }
+                .matching { it.outputType == VariantOutput.MAIN || it.filters.isEmpty() }
                 .all { output -> createUploadTask(project, variant, output, appConfig) }
         }
     }
