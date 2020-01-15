@@ -70,7 +70,7 @@ class AppCenterUploader(
         }
     }
 
-    fun uploadSymbols(mappingFile: File, versionName: String, versionCode : String, logger: (String) -> Unit) {
+    fun uploadSymbols(mappingFile: File, versionName: String, versionCode: String, logger: (String) -> Unit) {
         logger("Step 1/3 : Prepare Symbol")
         val prepareRequest = PrepareSymbolUploadRequest(
             symbolType = "AndroidProguard",
@@ -89,7 +89,7 @@ class AppCenterUploader(
         val preparedUpload = prepareResponse.body()!!
 
         logger("Step 2/3 : Upload Symbol")
-        val uploadResponse = doUploadSymbol(preparedUpload.uploadUrl, mappingFile, logger).execute()
+        val uploadResponse = doUploadSymbol(preparedUpload.uploadUrl, mappingFile).execute()
         if (!uploadResponse.isSuccessful) {
             throw AppCenterUploaderException(
                 "Can't upload mapping, code=${uploadResponse.code()}, " +
@@ -114,7 +114,7 @@ class AppCenterUploader(
             .addFormDataPart(
                 "ipa", file.name,
                 ProgressRequestBody(file, "application/octet-stream") { current, total ->
-                    val progress : Int = ((current.toDouble() / total) * 100).toInt()
+                    val progress: Int = ((current.toDouble() / total) * 100).toInt()
                     logger("Step 2/4 : Upload apk ($progress %)")
                 }
             )
@@ -128,7 +128,7 @@ class AppCenterUploader(
         return okHttpClient.newCall(request)
     }
 
-    private fun doUploadSymbol(uploadUrl: String, file: File, logger: (String) -> Unit): Call {
+    private fun doUploadSymbol(uploadUrl: String, file: File): Call {
         val request = Request.Builder()
             .url(uploadUrl)
             .addHeader("x-ms-blob-type", "BlockBlob")
@@ -137,9 +137,6 @@ class AppCenterUploader(
 
         return okHttpClient.newCall(request)
     }
-
-
-
 }
 
 class AppCenterUploaderException(message: String) : Exception(message)
