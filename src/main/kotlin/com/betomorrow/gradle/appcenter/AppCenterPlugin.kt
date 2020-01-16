@@ -45,7 +45,7 @@ class AppCenterPlugin : Plugin<Project> {
 
         appCenterApp?.let {
 
-            val outputDirectory = variant.packageApplicationProvider.get().outputDirectory
+            val outputDirectory = variant.packageApplicationProvider.get().outputDirectory.get().asFile
             val assembleTask = variant.assembleProvider.get()
 
             variant.outputs.all { output ->
@@ -55,8 +55,8 @@ class AppCenterPlugin : Plugin<Project> {
                     val taskSuffix = "${variant.name.capitalize()}$filterIdentifiersCapitalized"
 
                     val uploadTask = project.tasks.register(
-                            "appCenterUpload$taskSuffix",
-                            UploadAppCenterTask::class.java
+                        "appCenterUpload$taskSuffix",
+                        UploadAppCenterTask::class.java
                     ) { uploadTask ->
 
                         uploadTask.group = APP_CENTER_PLUGIN_GROUP
@@ -71,7 +71,7 @@ class AppCenterPlugin : Plugin<Project> {
                         uploadTask.notifyTesters = appCenterApp.notifyTesters
 
                         if (appCenterApp.uploadMappingFiles) {
-                            uploadTask.mappingFileProvider = { variant.mappingFile }
+                            uploadTask.mappingFileProvider = { variant.mappingFileProvider.get().singleFile }
                         } else {
                             uploadTask.mappingFileProvider = { null }
                         }
