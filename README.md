@@ -20,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.18"
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.2.0"
     }
 }
 
@@ -124,8 +124,13 @@ appcenter {
 }
 ```
 
-## Prerequisite
-- com.android.tools.build:gradle >= 3.3.0
+## Gradle Android Plugin Compatibility Matrix
+
+| Android Build Tool Version | AppCenter Plugin Version |
+| -------------------------- | ------------------------ |
+| 3.6.0                      | > 1.2.x                  |
+| 3.5.0                      | 1.1.13 - 1.1.18          |
+| 3.3.0                      | < 1.1.13                 |
 
 ## Use Environment Variables (for CI use)
 - `APPCENTER_API_TOKEN` : AppCenter API token
