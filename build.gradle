@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.babylonhealth'
-version = '1.0.4'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ dependencies {
     compileOnly gradleApi()
 
     // Third Party
-    compileOnly 'com.android.tools.build:gradle:3.5.0'
+    compileOnly 'com.android.tools.build:gradle:3.6.0'
 
     compile 'com.squareup.okhttp3:okhttp:3.12.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'

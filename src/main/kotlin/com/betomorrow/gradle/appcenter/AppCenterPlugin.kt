@@ -9,7 +9,6 @@ import com.betomorrow.gradle.appcenter.extensions.AppCenterExtension
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 class AppCenterPlugin : Plugin<Project> {
 
@@ -60,7 +59,7 @@ class AppCenterPlugin : Plugin<Project> {
             uploadTask.appName = appConfig.appName
             uploadTask.distributionGroups = appConfig.distributionGroups
             uploadTask.ownerName = appConfig.ownerName
-            uploadTask.fileProvider = variant.packageApplicationProvider.map { File(it.outputDirectory, output.outputFileName) }
+            uploadTask.fileProvider = variant.packageApplicationProvider.flatMap { it.outputDirectory.file(output.outputFileName) }
             uploadTask.releaseNotes = appConfig.releaseNotes
             uploadTask.notifyTesters = appConfig.notifyTesters
 

@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter.tasks
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
 import com.betomorrow.gradle.appcenter.utils.truncate
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
@@ -21,7 +22,7 @@ open class UploadAppCenterTask : DefaultTask() {
     var distributionGroups: List<String> = emptyList()
     var symbols: List<Any> = emptyList()
 
-    lateinit var fileProvider: Provider<File>
+    lateinit var fileProvider: Provider<RegularFile>
     lateinit var mappingFileProvider: () -> File?
     var releaseNotes: Any? = null
 
@@ -33,7 +34,7 @@ open class UploadAppCenterTask : DefaultTask() {
         val loggerRelease = loggerFactory.newOperation("AppCenter")
         loggerRelease.start("AppCenter Upload apk", "Step 0/4")
         val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
-        val releaseId = uploader.uploadApk(fileProvider.get(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
+        val releaseId = uploader.uploadApk(fileProvider.get().asFile, toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             loggerRelease.progress(it)
         }
         loggerRelease.completed("AppCenter Upload completed", false)
