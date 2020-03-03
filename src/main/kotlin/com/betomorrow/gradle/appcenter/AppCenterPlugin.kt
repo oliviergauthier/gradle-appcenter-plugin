@@ -64,8 +64,7 @@ class AppCenterPlugin : Plugin<Project> {
             uploadTask.notifyTesters = appConfig.notifyTesters
 
             if (appConfig.uploadMappingFiles) {
-                val mappingFile = variant.mappingFile
-                uploadTask.mappingFileProvider = { mappingFile }
+                uploadTask.mappingFileProvider = { variant.mappingFileProvider.get().firstOrNull() }
             } else {
                 uploadTask.mappingFileProvider = { null }
             }
