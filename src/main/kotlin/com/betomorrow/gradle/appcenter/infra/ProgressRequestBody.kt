@@ -33,14 +33,11 @@ internal class ProgressRequestBody(
         var source: Source? = null
         try {
             source = file.source()
-            if (source == null) {
-                return
-            }
 
             var total: Long = 0
             var read: Long = 0
 
-            while ({read = source.read(sink.buffer(),
+            while ({read = source.read(sink.buffer,
                     SEGMENT_SIZE
                 ); read}() != -1L) {
                 total += read
