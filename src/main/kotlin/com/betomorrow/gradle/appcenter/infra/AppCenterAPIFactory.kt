@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AppCenterAPIFactory(
+internal class AppCenterAPIFactory(
     private val project: Project
 ) {
 

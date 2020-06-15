@@ -1,16 +1,16 @@
 package com.betomorrow.gradle.appcenter.infra
 
 import okhttp3.MediaType
-import okio.Okio
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.io.IOException
 import okio.BufferedSink
 import okhttp3.RequestBody
-import okhttp3.internal.Util
+import okhttp3.internal.closeQuietly
 import okio.Source
+import okio.source
 import java.io.File
 
-
-class ProgressRequestBody(
+internal class ProgressRequestBody(
     private val file: File,
     private val contentType: String,
     private val listener: (Long, Long) -> Unit
@@ -25,14 +25,14 @@ class ProgressRequestBody(
     }
 
     override fun contentType(): MediaType? {
-        return MediaType.parse(contentType)
+        return contentType.toMediaTypeOrNull()
     }
 
     @Throws(IOException::class)
     override fun writeTo(sink: BufferedSink) {
         var source: Source? = null
         try {
-            source = Okio.source(file)
+            source = file.source()
             if (source == null) {
                 return
             }
@@ -48,7 +48,7 @@ class ProgressRequestBody(
                 this.listener(total, contentLength)
             }
         } finally {
-            Util.closeQuietly(source)
+            source?.closeQuietly()
         }
     }
 

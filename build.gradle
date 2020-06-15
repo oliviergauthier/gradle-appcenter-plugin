@@ -36,10 +36,10 @@ dependencies {
     // Third Party
     compileOnly 'com.android.tools.build:gradle:3.6.0-rc01'
 
-    compile 'com.squareup.okhttp3:okhttp:3.12.1'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.6.1'
-    compile 'com.squareup.retrofit2:retrofit:2.6.1'
+    compile 'com.squareup.okhttp3:okhttp:4.7.2'
+    compile 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.9.0'
+    compile 'com.squareup.retrofit2:retrofit:2.9.0'
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

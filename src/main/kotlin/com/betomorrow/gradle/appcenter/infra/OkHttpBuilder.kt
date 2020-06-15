@@ -7,7 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.gradle.api.Project
 import java.util.concurrent.TimeUnit
 
-class OkHttpBuilder(
+internal class OkHttpBuilder(
     private val project: Project
 ) {
 

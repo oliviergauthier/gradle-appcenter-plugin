@@ -2,7 +2,7 @@ package com.betomorrow.gradle.appcenter.infra
 
 import org.gradle.api.Project
 
-class AppCenterUploaderFactory(
+internal class AppCenterUploaderFactory(
     private val project: Project
 ) {
 
