@@ -41,7 +41,7 @@ open class UploadAppCenterTask : DefaultTask() {
         if (mappingFile != null) {
             val loggerMapping = loggerFactory.newOperation("AppCenter")
             loggerMapping.start("AppCenter Upload mapping file", "Step 0/4")
-            uploader.uploadSymbols(mappingFile, versionName, versionCode.toString()) {
+            uploader.uploadSymbols(mappingFile, "AndroidProguard", versionName, versionCode.toString()) {
                 loggerMapping.progress(it)
             }
             loggerMapping.completed("AppCenter Upload mapping completed", false)
@@ -51,7 +51,7 @@ open class UploadAppCenterTask : DefaultTask() {
             val loggerSymbol = loggerFactory.newOperation("AppCenter")
             loggerSymbol.start("AppCenter Upload symbol $it ", "Step 0/4")
             try {
-                uploader.uploadSymbols(toSymbolFile(it), versionName, versionCode.toString()) {
+                uploader.uploadSymbols(toSymbolFile(it), "Breakpad", versionName, versionCode.toString()) {
                     loggerSymbol.progress(it)
                 }
                 loggerSymbol.completed("AppCenter Upload symbol $it succeed", false)
