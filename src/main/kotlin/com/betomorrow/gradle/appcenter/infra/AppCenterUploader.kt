@@ -1,6 +1,7 @@
 package com.betomorrow.gradle.appcenter.infra
 
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.io.File
 
 private const val RELEASE_URL_TEMPLATE = "https://appcenter.ms/orgs/%s/apps/%s/distribute/releases/%s"
@@ -32,8 +33,8 @@ class AppCenterUploader(
         val uploadResponse = doUploadApk(preparedUpload.uploadUrl, file, logger).execute()
         if (!uploadResponse.isSuccessful) {
             throw AppCenterUploaderException(
-                "Can't upload APK, code=${uploadResponse.code()}, " +
-                        "reason=${uploadResponse.body()?.string()}"
+                "Can't upload APK, code=${uploadResponse.code}, " +
+                        "reason=${uploadResponse.body?.string()}"
             )
         }
 
@@ -92,8 +93,8 @@ class AppCenterUploader(
         val uploadResponse = doUploadSymbol(preparedUpload.uploadUrl, mappingFile).execute()
         if (!uploadResponse.isSuccessful) {
             throw AppCenterUploaderException(
-                "Can't upload mapping, code=${uploadResponse.code()}, " +
-                        "reason=${uploadResponse.body()?.string()}"
+                "Can't upload mapping, code=${uploadResponse.code}, " +
+                        "reason=${uploadResponse.body?.string()}"
             )
         }
 
@@ -132,7 +133,7 @@ class AppCenterUploader(
         val request = Request.Builder()
             .url(uploadUrl)
             .addHeader("x-ms-blob-type", "BlockBlob")
-            .put(RequestBody.create(MediaType.parse("text/plain; charset=UTF-8"), file))
+            .put(RequestBody.create("text/plain; charset=UTF-8".toMediaTypeOrNull(), file))
             .build()
 
         return okHttpClient.newCall(request)
