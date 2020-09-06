@@ -71,10 +71,10 @@ class AppCenterUploader(
         }
     }
 
-    fun uploadSymbols(mappingFile: File, versionName: String, versionCode: String, logger: (String) -> Unit) {
+    fun uploadSymbols(mappingFile: File, symbolType:String, versionName: String, versionCode: String, logger: (String) -> Unit) {
         logger("Step 1/3 : Prepare Symbol")
         val prepareRequest = PrepareSymbolUploadRequest(
-            symbolType = "AndroidProguard",
+            symbolType = symbolType,
             fileName = mappingFile.name,
             version = versionName,
             build = versionCode
