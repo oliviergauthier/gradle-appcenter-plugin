@@ -1,0 +1,19 @@
+com example.application.ArgumentWordReader -> com.example.a.a:
+    java.lang.String[] arguments -> a
+    int index -> a
+    36:57:void <init>(java.lang.String[],java.io.File) -> <init>
+    64:64:java.lang.String nextLine() -> a
+    72:72:java.lang.String lineLocationDescription() -> b
+com.example.application.Main -> com.example.application.Main:
+    com.example.application.Configuration configuration -> a
+    50:66:void <init>(com.example.application.Configuration) -> <init>
+    74:228:void execute() -> a
+    2039:2056:void com.example.application.GPL.check():39:56 -> a
+    2039:2056:void execute():76 -> a
+    2236:2252:void printConfiguration():236:252 -> a
+    2236:2252:void execute():80 -> a
+    3040:3042:java.io.PrintWriter com.example.application.util.PrintWriterUtil.createPrintWriterOut(java.io.File):40:42 -> a
+    3040:3042:void printConfiguration():243 -> a
+    3040:3042:void execute():80 -> a
+    3260:3268:void readInput():260:268 -> a
+    3260:3268:void execute():97 -> a
