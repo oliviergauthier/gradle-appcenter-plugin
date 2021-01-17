@@ -75,5 +75,4 @@ class LambdaInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         return lambda(chain)
     }
-
 }

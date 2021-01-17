@@ -12,63 +12,46 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
 
     var dimension: String? = null
 
-    lateinit var appName: String
-
-    var appCenterId: String? = null
+    var appName: String? = null
 
     var apiToken: String
-        get() {
-            return _apiToken ?: parent.apiToken
-        }
+        get() = _apiToken ?: parent.apiToken
         set(value) {
             this._apiToken = value
         }
 
     var ownerName: String
-        get() {
-            return _ownerName ?: parent.ownerName
-        }
+        get() = _ownerName ?: parent.ownerName
         set(value) {
             this._ownerName = value
         }
 
-
     var distributionGroups: List<String>
-        get() {
-            return _distributionGroups ?: parent.distributionGroups
-        }
+        get() = _distributionGroups ?: parent.distributionGroups
         set(value) {
             this._distributionGroups = value
         }
 
     var releaseNotes: Any
-        get() {
-            return _releaseNotes ?: parent.releaseNotes
-        }
+        get() = _releaseNotes ?: parent.releaseNotes
         set(value) {
             this._releaseNotes = value
         }
 
     var notifyTesters: Boolean
-        get() {
-            return _notifyTesters ?: parent.notifyTesters
-        }
+        get() = _notifyTesters ?: parent.notifyTesters
         set(value) {
             _notifyTesters = value
         }
 
     var uploadMappingFiles: Boolean
-        get() {
-            return _uploadMappingFiles ?: parent.uploadMappingFiles
-        }
+        get() = _uploadMappingFiles ?: parent.uploadMappingFiles
         set(value) {
             _uploadMappingFiles = value
         }
 
     var symbols: List<Any>
-        get() {
-            return _symbols ?: parent.symbols
-        }
+        get() = _symbols ?: parent.symbols
         set(value) {
             _symbols = value
         }
@@ -80,9 +63,4 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
     fun appName(appName: String) {
         this.appName = appName
     }
-
-    fun appCenterId(id: String) {
-        this.appCenterId = id
-    }
-
 }
