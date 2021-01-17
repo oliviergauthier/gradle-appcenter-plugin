@@ -10,9 +10,8 @@ buildscript {
     }
 }
 
-
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 apply plugin: "com.gradle.plugin-publish"
@@ -29,17 +28,24 @@ repositories {
     google()
 }
 
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compileOnly gradleApi()
 
     // Third Party
-    compileOnly 'com.android.tools.build:gradle:3.6.0-rc01'
+    compileOnly 'com.android.tools.build:gradle:4.1.1'
 
-    compile 'com.squareup.okhttp3:okhttp:4.5.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:4.5.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.6.1'
-    compile 'com.squareup.retrofit2:retrofit:2.6.1'
+    compile 'com.squareup.okhttp3:okhttp:4.9.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.9.0'
+    compile 'com.squareup.retrofit2:retrofit:2.9.0'
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
@@ -48,7 +54,7 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.11.1'
     testCompile gradleTestKit()
 
-    testRuntime "cglib:cglib-nodep:3.2.4"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "cglib:cglib-nodep:3.2.4"        // allows mocking of classes (in addition to interfaces)
     testRuntime "org.objenesis:objenesis:2.4"    // allows mocking of classes without default constructor (together with CGLIB)
 }
 
@@ -68,26 +74,21 @@ test {
  */
 sourceSets {
     integrationTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir file('src/integration-test/kotlin')
-        }
-        resources.srcDir file('src/integration-test/resources')
-    }
-}
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
 
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntime.extendsFrom testRuntime
+        java.srcDir file("./src/integration-test/kotlin")
+        resources.srcDir file("./src/integration-test/resources")
+    }
 }
 
 task integrationTest(type: Test, group: "verification") {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     outputs.upToDateWhen { false }
+    mustRunAfter test
+
+    useJUnitPlatform()
 }
 
 check.dependsOn integrationTest
@@ -116,24 +117,20 @@ publishing {
 }
 
 wrapper {
-    gradleVersion = "5.6"
+    gradleVersion = "6.7.1"
     distributionType = Wrapper.DistributionType.ALL
 }
 
 pluginBundle {
-
     website = 'https://github.com/oliviergauthier/gradle-appcenter-plugin'
     vcsUrl = 'https://github.com/oliviergauthier/gradle-appcenter-plugin'
     tags = ['android', 'appcenter', 'plugin', 'tool']
 
     plugins {
-
         libraryPlugin {
             id = 'com.betomorrow.appcenter'
             displayName = 'Gradle AppCenter Plugin'
             description = 'Plugin to upload apk to AppCenter'
         }
-
     }
-
 }
