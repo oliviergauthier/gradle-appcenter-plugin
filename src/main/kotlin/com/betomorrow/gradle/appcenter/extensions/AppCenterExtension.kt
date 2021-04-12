@@ -79,7 +79,7 @@ open class AppCenterExtension(val project: Project) {
         action.execute(apps)
     }
 
-    fun findByFlavor(name: String, dimension: String): AppCenterAppExtension? {
+    fun findByFlavor(name: String, dimension: String?): AppCenterAppExtension? {
         return apps.firstOrNull { it.name == name && dimension == it.dimension }
     }
 
