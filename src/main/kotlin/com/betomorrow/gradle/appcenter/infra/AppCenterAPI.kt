@@ -3,6 +3,7 @@ package com.betomorrow.gradle.appcenter.infra
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -15,9 +16,9 @@ interface AppCenterAPI {
      * --header 'Content-Type: application/json'
      * --header 'Accept: application/json'
      * --header 'X-API-Token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-     * 'https://api.appcenter.ms/v0.1/apps/{ownerName}/{appName}/release_uploads'
+     * 'https://api.appcenter.ms/v0.1/apps/{ownerName}/{appName}/uploads/releases/'
      */
-    @POST("apps/{ownerName}/{appName}/release_uploads")
+    @POST("apps/{ownerName}/{appName}/uploads/releases/")
     fun prepareReleaseUpload(
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String
@@ -29,15 +30,22 @@ interface AppCenterAPI {
      * --header 'Accept: application/json'
      * --header 'X-API-Token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
      * -d '{ "status": "committed"  }'
-     * 'https://api.appcenter.ms/v0.1/apps/{ownerName/{appName}/release_uploads/{upload_id}'
+     * 'https://api.appcenter.ms/v0.1/apps/{ownerName/{appName}/uploads/releases/{upload_id}'
      */
-    @PATCH("apps/{ownerName}/{appName}/release_uploads/{uploadId}")
+    @PATCH("apps/{ownerName}/{appName}/uploads/releases/{uploadId}")
     fun commitReleaseUpload(
         @Path("ownerName") ownerName: String,
         @Path("appName") appName: String,
         @Path("uploadId") uploadId: String,
         @Body status: CommitReleaseUploadRequest
     ): Call<CommitReleaseUploadResponse>
+
+    @GET("apps/{ownerName}/{appName}/uploads/releases/{uploadId}")
+    fun getUpload(
+        @Path("ownerName") ownerName: String,
+        @Path("appName") appName: String,
+        @Path("uploadId") uploadId: String
+    ): Call<GetUploadResponse>
 
     /**
      * curl -X PATCH
@@ -88,20 +96,27 @@ interface AppCenterAPI {
 }
 
 class PrepareReleaseUploadResponse(
-    @SerializedName("upload_id") val uploadId: String,
-    @SerializedName("upload_url") val uploadUrl: String,
-    @SerializedName("asset_id") val assetId: String?,
-    @SerializedName("asset_domain") val assetDomain: String?,
-    @SerializedName("asset_token") val assetToken: String?
+    @SerializedName("id") val id: String,
+    @SerializedName("upload_domain") val uploadDomain: String,
+    @SerializedName("token") val token: String,
+    @SerializedName("url_encoded_token") val urlEncodedToken: String,
+    @SerializedName("package_asset_id") val packageAssetId: String
 )
 
 class CommitReleaseUploadRequest(
-    val status: String
+    @SerializedName("upload_status") val uploadStatus: String
 )
 
 class CommitReleaseUploadResponse(
-    @SerializedName("release_id") val releaseId: String,
-    @SerializedName("release_url") val releaseUrl: String
+    @SerializedName("id") val id: String,
+    @SerializedName("upload_status") val uploadStatus: String
+)
+
+class GetUploadResponse(
+    @SerializedName("id") val id: String,
+    @SerializedName("upload_status") val uploadStatus: String,
+    @SerializedName("error_details") val errorDetails: String?,
+    @SerializedName("release_distinct_id") val releaseId: String?
 )
 
 class PrepareSymbolUploadRequest(
@@ -149,7 +164,4 @@ class DistributeRequest(
         @SerializedName("commit_hash") val commitHash: String? = null,
         @SerializedName("commit_message") val commitMessage: String? = null
     )
-
 }
-
-

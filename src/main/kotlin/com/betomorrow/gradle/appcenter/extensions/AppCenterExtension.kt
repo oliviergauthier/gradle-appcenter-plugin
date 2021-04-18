@@ -9,66 +9,47 @@ open class AppCenterExtension(val project: Project) {
 
     private var _apiToken: String? = null
     private var _ownerName: String? = null
-    private var _distributionGroups: List<String> = emptyList()
+    private var _distributionGroups: List<String>? = null
     private var _releaseNotes: Any? = null
     private var _notifyTesters: Boolean? = null
-    private var _symbols: List<Any> = emptyList()
+    private var _symbols: List<Any>? = null
 
     var apps: NamedDomainObjectContainer<AppCenterAppExtension> = project.container(AppCenterAppExtension::class.java) {
         AppCenterAppExtension(it, this)
     }
 
     var apiToken: String
-        get() {
-            return _apiToken ?: getGlobalConfig("APPCENTER_API_TOKEN", "")
-        }
+        get() = _apiToken ?: getGlobalConfig("APPCENTER_API_TOKEN", "")
         set(value) {
             this._apiToken = value
         }
 
     var ownerName: String
-        get() {
-            return _ownerName ?: getGlobalConfig("APPCENTER_OWNER_NAME", "")
-        }
+        get() = _ownerName ?: getGlobalConfig("APPCENTER_OWNER_NAME", "")
         set(value) {
             this._ownerName = value
         }
 
     var releaseNotes: Any
-        get() {
-            return _releaseNotes ?: getGlobalConfig("APPCENTER_RELEASE_NOTES", "")
-        }
+        get() = _releaseNotes ?: getGlobalConfig("APPCENTER_RELEASE_NOTES", "")
         set(value) {
             _releaseNotes = value
         }
 
     var distributionGroups: List<String>
-        get() {
-            return if (!_distributionGroups.isEmpty())
-                _distributionGroups
-            else
-                getGlobalConfig("APPCENTER_DISTRIBUTION_GROUPS", "").split(",")
-        }
+        get() = _distributionGroups ?: getGlobalConfig("APPCENTER_DISTRIBUTION_GROUPS", "").split(",")
         set(value) {
             _distributionGroups = value
         }
 
     var notifyTesters: Boolean
-        get() {
-            return _notifyTesters ?: getGlobalConfig("APPCENTER_NOTIFY_TESTERS", "false").toBoolean()
-        }
+        get() = _notifyTesters ?: getGlobalConfig("APPCENTER_NOTIFY_TESTERS", "false").toBoolean()
         set(value) {
             _notifyTesters = value
         }
 
     var symbols: List<Any>
-        get() {
-            return if (!_symbols.isEmpty()) {
-                return _symbols
-            } else {
-                getGlobalConfig("APPCENTER_SYMBOLS", "").split(",")
-            }
-        }
+        get() = _symbols ?: getGlobalConfig("APPCENTER_SYMBOLS", "").split(",")
         set(value) {
             _symbols = value
         }
@@ -79,7 +60,7 @@ open class AppCenterExtension(val project: Project) {
         action.execute(apps)
     }
 
-    fun findByFlavor(name: String, dimension: String): AppCenterAppExtension? {
+    fun findByFlavor(name: String, dimension: String?): AppCenterAppExtension? {
         return apps.firstOrNull { it.name == name && dimension == it.dimension }
     }
 
@@ -97,7 +78,5 @@ open class AppCenterExtension(val project: Project) {
                 defaultValue
             }
         }
-
     }
-
 }

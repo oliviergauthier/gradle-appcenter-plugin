@@ -12,13 +12,10 @@ import java.io.File
 class AppCenterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-
         with(project) {
-
             extensions.create(APP_CENTER_EXTENSION_NAME, AppCenterExtension::class.java, this)
 
             afterEvaluate { p ->
-
                 val androidExtension = extensions.getByName("android") as AppExtension
                 val appCenterExtension = extensions.getByName(APP_CENTER_EXTENSION_NAME) as AppCenterExtension
                 androidExtension.applicationVariants.whenObjectAdded { variant ->
@@ -29,58 +26,53 @@ class AppCenterPlugin : Plugin<Project> {
                     handleVariant(variant, appCenterExtension, p)
                 }
             }
-
         }
-
     }
 
     private fun handleVariant(variant: ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
-
-        val appCenterApp = variant.productFlavors.map {
+        val appCenterApp = variant.productFlavors.mapNotNull {
             appCenterExtension.findByFlavor(
                 it.name,
                 it.dimension
             )
-        }.firstOrNull { it != null } ?: appCenterExtension.findByBuildVariant(variant.name)
+        }.firstOrNull() ?: appCenterExtension.findByBuildVariant(variant.name)
 
         appCenterApp?.let {
-
             val outputDirectory = variant.packageApplicationProvider.get().outputDirectory.get().asFile
             val assembleTask = variant.assembleProvider.get()
 
             variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
-
                     val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalize() }
                     val taskSuffix = "${variant.name.capitalize()}$filterIdentifiersCapitalized"
 
+                    val mappingFileProvider = if (appCenterApp.uploadMappingFiles) {
+                        { variant.mappingFileProvider.get().firstOrNull() }
+                    } else {
+                        { null }
+                    }
+
                     val uploadTask = project.tasks.register(
                         "appCenterUpload$taskSuffix",
-                        UploadAppCenterTask::class.java
-                    ) { uploadTask ->
+                        UploadAppCenterTask::class.java,
+                        appCenterApp.apiToken,
+                        appCenterApp.ownerName,
+                        appCenterApp.appName,
+                        variant.versionName,
+                        variant.versionCode,
+                        { File(outputDirectory, output.outputFileName) },
+                        mappingFileProvider,
+                        appCenterApp.symbols,
+                        appCenterApp.releaseNotes,
+                        appCenterApp.distributionGroups,
+                        appCenterApp.notifyTesters
+                    ).apply {
+                        configure { task ->
+                            task.group = APP_CENTER_PLUGIN_GROUP
+                            task.description = "Upload ${variant.name} APK to AppCenter"
 
-                        uploadTask.group = APP_CENTER_PLUGIN_GROUP
-                        uploadTask.description = "Upload ${variant.name} APK to AppCenter"
-
-                        uploadTask.apiToken = appCenterApp.apiToken
-                        uploadTask.appName = appCenterApp.appName
-                        uploadTask.distributionGroups = appCenterApp.distributionGroups
-                        uploadTask.ownerName = appCenterApp.ownerName
-                        uploadTask.fileProvider = { File(outputDirectory, output.outputFileName) }
-                        uploadTask.releaseNotes = appCenterApp.releaseNotes
-                        uploadTask.notifyTesters = appCenterApp.notifyTesters
-
-                        if (appCenterApp.uploadMappingFiles) {
-                            uploadTask.mappingFileProvider = { variant.mappingFileProvider.get().firstOrNull() }
-                        } else {
-                            uploadTask.mappingFileProvider = { null }
+                            task.mustRunAfter(assembleTask)
                         }
-
-                        uploadTask.versionName = variant.versionName
-                        uploadTask.versionCode = variant.versionCode
-                        uploadTask.symbols = appCenterApp.symbols
-
-                        uploadTask.mustRunAfter(assembleTask)
                     }
 
                     project.tasks.register(
@@ -99,5 +91,4 @@ class AppCenterPlugin : Plugin<Project> {
         const val APP_CENTER_EXTENSION_NAME = "appcenter"
         const val APP_CENTER_PLUGIN_GROUP = "AppCenter"
     }
-
 }
