@@ -12,6 +12,7 @@ import java.io.File
 class AppCenterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+
         with(project) {
             extensions.create(APP_CENTER_EXTENSION_NAME, AppCenterExtension::class.java, this)
 
@@ -46,10 +47,12 @@ class AppCenterPlugin : Plugin<Project> {
                     val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalize() }
                     val taskSuffix = "${variant.name.capitalize()}$filterIdentifiersCapitalized"
 
-                    val mappingFileProvider = if (appCenterApp.uploadMappingFiles) {
-                        { variant.mappingFileProvider.get().firstOrNull() }
-                    } else {
-                        { null }
+                    val apkFileProvider = {
+                        File(outputDirectory, output.outputFileName)
+                    }
+
+                    val mappingFileProvider = {
+                        variant.mappingFileProvider.get().first()
                     }
 
                     val uploadTask = project.tasks.register(
@@ -60,7 +63,8 @@ class AppCenterPlugin : Plugin<Project> {
                         appCenterApp.appName,
                         variant.versionName,
                         variant.versionCode,
-                        { File(outputDirectory, output.outputFileName) },
+                        apkFileProvider,
+                        appCenterApp.uploadMappingFiles,
                         mappingFileProvider,
                         appCenterApp.symbols,
                         appCenterApp.releaseNotes,

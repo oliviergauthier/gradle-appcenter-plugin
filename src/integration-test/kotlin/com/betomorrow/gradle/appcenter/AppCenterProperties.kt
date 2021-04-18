@@ -1,22 +1,24 @@
 package com.betomorrow.gradle.appcenter
 
+import java.util.*
+
 /**
  * AppCenter API properties used for integration tests.
  */
-object AppCenterProperties {
+class AppCenterProperties {
+
+    private val props = ClassLoader.getSystemResourceAsStream("integration-test.properties").use { inputStream ->
+        Properties().apply {
+            load(inputStream)
+        }
+    }
 
     /** AppCenter API token. */
-    val API_TOKEN = ""
+    val apiToken : String = props.getProperty("apiToken")
 
     /** AppCenter owner name. */
-    val OWNER_NAME = ""
+    val ownerName : String = props.getProperty("ownerName")
 
     /** AppCenter app name. */
-    val APP_NAME = "GradleSample"
-
-    /** Path to apk file that gets uploaded to AppCenter. */
-    val APK_PATH = "./src/integration-test/resources/test.apk"
-
-    /** Path to mapping file that gets uploaded to AppCenter. */
-    val MAPPING_PATH = "./src/integration-test/resources/mapping.txt"
+    val appName : String = props.getProperty("appName")
 }

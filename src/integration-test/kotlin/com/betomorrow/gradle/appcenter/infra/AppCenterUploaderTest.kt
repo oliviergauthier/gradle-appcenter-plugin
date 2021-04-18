@@ -1,24 +1,22 @@
 package com.betomorrow.gradle.appcenter.infra
 
 import com.betomorrow.gradle.appcenter.AppCenterProperties
-import com.betomorrow.gradle.appcenter.AppCenterProperties.API_TOKEN
-import com.betomorrow.gradle.appcenter.AppCenterProperties.APP_NAME
-import com.betomorrow.gradle.appcenter.AppCenterProperties.MAPPING_PATH
-import com.betomorrow.gradle.appcenter.AppCenterProperties.OWNER_NAME
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class AppCenterUploaderTest {
 
+    val properties = AppCenterProperties()
+
     @Test
     fun testUploadApk() {
         val debug = true
         val project = ProjectBuilder.builder().build()
-        val apiFactory = AppCenterAPIFactory(project, API_TOKEN, debug)
-        val uploader = AppCenterUploader(apiFactory, OWNER_NAME, APP_NAME)
+        val apiFactory = AppCenterAPIFactory(project, properties.apiToken, debug)
+        val uploader = AppCenterUploader(apiFactory, properties.ownerName, properties.appName)
 
-        val file = File(AppCenterProperties.APK_PATH)
+        val file = File("src/integration-test/resources/test.apk")
         uploader.uploadApk(file, "newVersion", listOf("Sample Group", "Collaborators"), false) {
             println(it)
         }
@@ -28,11 +26,11 @@ class AppCenterUploaderTest {
     fun testUploadSymbols() {
         val debug = true
         val project = ProjectBuilder.builder().build()
-        val apiFactory = AppCenterAPIFactory(project, API_TOKEN, debug)
-        val uploader = AppCenterUploader(apiFactory, OWNER_NAME, APP_NAME)
+        val apiFactory = AppCenterAPIFactory(project, properties.apiToken, debug)
+        val uploader = AppCenterUploader(apiFactory, properties.ownerName, properties.appName)
 
-        val mappingFile = File(MAPPING_PATH)
-        uploader.uploadSymbols(mappingFile, "AndroidProguard", "1.0", "1") {
+        val mappingFile = File("src/integration-test/resources/mapping.txt")
+        uploader.uploadMapping(mappingFile, "1.0", 1) {
             println(it)
         }
     }

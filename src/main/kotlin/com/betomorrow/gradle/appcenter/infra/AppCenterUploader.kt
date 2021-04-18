@@ -83,6 +83,14 @@ class AppCenterUploader(
         apiClient.distribute(ownerName, appName, uploadResult.releaseId!!, request).executeOrThrow()
     }
 
+    fun uploadMapping(mappingFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {
+        uploadSymbols(mappingFile, "AndroidProguard", versionName, versionCode.toString(), logger)
+    }
+
+    fun uploadSymbols(symbolsFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {
+        uploadSymbols(symbolsFile, "Breakpad", versionName, versionCode.toString(), logger)
+    }
+
     fun uploadSymbols(
         mappingFile: File,
         symbolType: String,

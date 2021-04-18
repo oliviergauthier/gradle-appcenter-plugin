@@ -24,11 +24,6 @@ android {
             applicationIdSuffix ".alpha"
             versionNameSuffix "-alpha"
         }
-        beta {
-            dimension "environment"
-            applicationIdSuffix ".beta"
-            versionNameSuffix "-beta"
-        }
         prod {
             dimension "environment"
         }
@@ -43,8 +38,8 @@ android {
 }
 
 appcenter {
-    apiToken = project.properties.get("apiToken", "")
-    ownerName = project.properties.get("ownerName", "")
+    apiToken = project.properties.get("apiToken") ?: localProperties.getProperty("apiToken")
+    ownerName = project.properties.get("ownerName") ?: localProperties.getProperty("ownerName")
     distributionGroups = ["Collaborators"]
     releaseNotes = "A Sample Upload"
     notifyTesters = false
@@ -52,11 +47,7 @@ appcenter {
     apps {
         alpha {
             dimension = "environment"
-            appName = project.properties.get("appName", "GradleSample")
-        }
-        beta {
-            dimension = "environment"
-            appName = project.properties.get("appName", "GradleSample")
+            appName = project.properties.get("appName") ?: localProperties.getProperty("appName")
         }
     }
 }

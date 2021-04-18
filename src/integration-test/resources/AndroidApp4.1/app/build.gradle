@@ -1,0 +1,79 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+apply plugin: "com.betomorrow.appcenter"
+
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions "environment"
+
+    productFlavors {
+        alpha {
+            dimension "environment"
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        prod {
+            dimension "environment"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+appcenter {
+    apiToken = project.properties.get("apiToken") ?: localProperties.getProperty("apiToken")
+    ownerName = project.properties.get("ownerName") ?: localProperties.getProperty("ownerName")
+    distributionGroups = ["Collaborators"]
+    releaseNotes = "A Sample Upload"
+    notifyTesters = false
+    symbols = [ "symbols.zip" ]
+    uploadMappingFiles = true
+    apps {
+        alpha {
+            dimension = "environment"
+            appName = project.properties.get("appName") ?: localProperties.getProperty("appName")
+        }
+    }
+}
+
