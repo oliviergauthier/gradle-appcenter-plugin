@@ -91,7 +91,7 @@ task integrationTest(type: Test, group: "verification") {
     useJUnitPlatform()
 }
 
-check.dependsOn integrationTest
+// check.dependsOn integrationTest
 
 gradlePlugin {
     testSourceSets sourceSets.integrationTest

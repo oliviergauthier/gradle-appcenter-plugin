@@ -17,7 +17,7 @@ class AppCenterUploaderTest {
         val uploader = AppCenterUploader(apiFactory, properties.ownerName, properties.appName)
 
         val file = File("src/integration-test/resources/test.apk")
-        uploader.uploadApk(file, "newVersion", listOf("Sample Group", "Collaborators"), false) {
+        uploader.uploadApk(file, "newVersion", listOf("Collaborators"), false) {
             println(it)
         }
     }
