@@ -115,6 +115,12 @@ task integrationTest(type: Test, group: "verification") {
 
 gradlePlugin {
     testSourceSets sourceSets.integrationTest
+    plugins {
+        appCenterPlugin {
+            id = 'com.betomorrow.appcenter'
+            implementationClass = 'com.betomorrow.gradle.appcenter.AppCenterPlugin'
+        }
+    }
 }
 
 /**
@@ -147,7 +153,7 @@ pluginBundle {
     tags = ['android', 'appcenter', 'plugin', 'tool']
 
     plugins {
-        libraryPlugin {
+        appCenterPlugin {
             id = 'com.betomorrow.appcenter'
             displayName = 'Gradle AppCenter Plugin'
             description = 'Plugin to upload apk to AppCenter'
