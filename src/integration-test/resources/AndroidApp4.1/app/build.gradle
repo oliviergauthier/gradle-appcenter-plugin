@@ -22,7 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    flavorDimensions "environment"
+    flavorDimensions "client", "environment"
 
     productFlavors {
         alpha {
@@ -32,6 +32,12 @@ android {
         }
         prod {
             dimension "environment"
+        }
+        A  {
+            dimension "client"
+        }
+        B  {
+            dimension "client"
         }
     }
 

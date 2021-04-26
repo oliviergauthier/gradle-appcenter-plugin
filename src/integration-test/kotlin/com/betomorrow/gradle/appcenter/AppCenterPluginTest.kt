@@ -33,7 +33,7 @@ class AppCenterPluginTest {
             .withProjectDir(File("src/integration-test/resources/AndroidApp4.1"))
             .withArguments(
                 "clean",
-                "appCenterAssembleAndUploadAlphaDebug",
+                "appCenterAssembleAndUploadAAlphaDebug",
                 "--stacktrace",
                 "-PapiToken=${properties.apiToken}",
                 "-PownerName=${properties.ownerName}",
