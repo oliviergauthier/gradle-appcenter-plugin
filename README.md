@@ -143,7 +143,7 @@ appcenter {
 - `APPCENTER_SYMBOLS` : Comma separated list of symbols file to upload
 
 ## Timeouts
-By default plugin set timeouts to 60 seconds. You can override them with the following properties :
+By default, plugin set timeouts to 60 seconds. You can override them with the following properties :
 - http.timeout.connect
 - http.timeout.read
 - http.timeout.write
