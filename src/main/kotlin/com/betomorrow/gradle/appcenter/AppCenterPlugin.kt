@@ -121,7 +121,7 @@ class AppCenterPlugin : Plugin<Project> {
                         "appCenterAssembleAndUpload$taskSuffix"
                     ) { task ->
                         task.group = APP_CENTER_PLUGIN_GROUP
-                        task.description = "Assemble and upload ${variant.name} APK to AppCenter"
+                        task.description = "Assemble and upload ${variant.name} APK to AppCenter. (Deprecated, call ${assembleTask.name} explicitly then use appCenterUpload$taskSuffix task)"
                         task.dependsOn(uploadTasks, assembleTask)
                     }
                 }

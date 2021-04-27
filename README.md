@@ -20,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.2.1"
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.3.0"
     }
 }
 
@@ -82,12 +82,12 @@ appcenter {
 ```
 **Note** : `ownerName` and `appName` can be found from AppCenter application url (`https://appcenter.ms/users/{ownerName}/apps/{appName}`) 
 
+The plugin will generate severals tasks for each variant : 
 
-The plugin will create 3 tasks :
-
+- appCenterUploadApkAlphaRelease
+- appCenterUploadMappingAlphaRelease # Only when `uploadMappingFiles` is set to true
+- appCenterUploadSymbolsAlphaRelease # Only when `symbols` are provided in configuration 
 - appCenterUploadAlphaRelease
-- appCenterUploadBetaRelease
-- appCenterUploadProdRelease
 
 To upload an apk, just run tasks assemble and appCenterUpload
 
@@ -115,6 +115,7 @@ appcenter {
             releaseNotes = "No Changes"
             appName = "GradleSample-Alpha"
             notifyTesters = true
+            uploadMappingFiles = true
             symbols = ["symbols.zip"]
         }
         prodRelease {           
@@ -128,7 +129,8 @@ appcenter {
 
 | Android Build Tool Version | AppCenter Plugin Version |
 | -------------------------- | ------------------------ |
-| 3.6.0                      | > 1.2.x                  |
+| 4.1.3                      | 1.3.x                    |
+| 3.6.0                      | 1.2.x                    |
 | 3.5.0                      | 1.1.13 - 1.1.18          |
 | 3.3.0                      | < 1.1.13                 |
 

@@ -24,8 +24,8 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 
-group 'com.betomorrow.gradle'
-version '1.2.3'
+group 'gradle.plugin.com.betomorrow.gradle'
+version '1.3.0'
 
 repositories {
     mavenCentral()
@@ -130,16 +130,6 @@ gradlePlugin {
 task sourceJar(type: Jar) {
     classifier "sources"
     from sourceSets.main.allSource
-}
-
-publishing {
-    publications {
-        BintrayPublication(MavenPublication) {
-            from components.java
-            artifact sourceJar
-            groupId = "gradle.plugin.${project.group}"
-        }
-    }
 }
 
 wrapper {
