@@ -1,0 +1,56 @@
+apply plugin: "com.betomorrow.appcenter"
+
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions "environment"
+    productFlavors {
+        alpha {
+            dimension "environment"
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        prod {
+            dimension "environment"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+appcenter {
+    apiToken = project.properties.get("apiToken") ?: localProperties.getProperty("apiToken")
+    ownerName = project.properties.get("ownerName") ?: localProperties.getProperty("ownerName")
+    distributionGroups = ["Collaborators"]
+    releaseNotes = "A Sample Upload"
+    notifyTesters = false
+    symbols = [ "symbols.zip" ]
+    apps {
+        alpha {
+            dimension = "environment"
+            appName = project.properties.get("appName") ?: localProperties.getProperty("appName")
+        }
+    }
+}
+
+dependencies {
+}

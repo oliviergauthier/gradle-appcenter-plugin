@@ -16,3 +16,4 @@ gradle-app.setting
 out
 
 local.properties
+src/integration-test/resources/integration-test.properties

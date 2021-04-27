@@ -6,19 +6,43 @@ import java.io.File
 
 class AppCenterPluginTest {
 
-    @Test
-    fun testApplyPlugin() {
+    val properties = AppCenterProperties()
 
+    @Test
+    fun testApplyPluginOnAndroidApp36() {
         val result = GradleRunner.create()
-            .withProjectDir(File("src/integration-test/resources/MyApplication"))
-            .withArguments("clean", "appCenterUploadAlphaRelease", "--stacktrace", "-PownerName=",  "-PapiToken=")
+            .withProjectDir(File("src/integration-test/resources/AndroidApp3.6"))
+            .withArguments(
+                "clean",
+                "appCenterAssembleAndUploadAlphaDebug",
+                "--stacktrace",
+                "-PapiToken=${properties.apiToken}",
+                "-PownerName=${properties.ownerName}",
+                "-PappName=${properties.appName}"
+            )
             .withPluginClasspath()
             .withDebug(true)
             .build()
 
-        println(result.getOutput())
-
+        println(result.output)
     }
 
+    @Test
+    fun testApplyPluginOnAndroidApp41() {
+        val result = GradleRunner.create()
+            .withProjectDir(File("src/integration-test/resources/AndroidApp4.1"))
+            .withArguments(
+                "clean",
+                "appCenterAssembleAndUploadAAlphaDebug",
+                "--stacktrace",
+                "-PapiToken=${properties.apiToken}",
+                "-PownerName=${properties.ownerName}",
+                "-PappName=${properties.appName}"
+            )
+            .withPluginClasspath()
+            .withDebug(true)
+            .build()
 
+        println(result.output)
+    }
 }

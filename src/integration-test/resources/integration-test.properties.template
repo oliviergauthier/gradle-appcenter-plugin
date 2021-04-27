@@ -1,0 +1,5 @@
+# Copy this file as integration-test.properties and fill it with your own values
+# To test plugin directly from sample apps, add those properties to `local.properties`file at projects roots
+apiToken=
+ownerName=
+appName=

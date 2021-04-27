@@ -9,71 +9,63 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import java.io.File
 import java.nio.file.Path
+import javax.inject.Inject
 
-open class UploadAppCenterTask : DefaultTask() {
 
-    @Input
-    lateinit var apiToken: String
-    @Input
-    lateinit var ownerName: String
-    @Input
-    lateinit var appName: String
-    @Input
-    lateinit var versionName: String
-    @Input
-    var versionCode: Int = 0
-    @Input
-    var notifyTesters: Boolean = false
-    @Input
-    var distributionGroups: List<String> = emptyList()
-    @Input
-    var symbols : List<Any> = emptyList()
-
-    @Input
-    lateinit var fileProvider: () -> File
-    @Input
-    @Optional
-    lateinit var mappingFileProvider: () -> File?
-    @Input
-    @Optional
-    var releaseNotes: Any? = null
+open class UploadAppCenterTask @Inject constructor(
+    @Input private val apiToken: String,
+    @Input private val ownerName: String,
+    @Input private val appName: String,
+    @Input private val versionName: String,
+    @Input private val versionCode: Int,
+    @Input private val fileProvider: () -> File,
+    @Input private val uploadMappingFiles: Boolean,
+    @Input @Optional private val mappingFileProvider: () -> File,
+    @Input private val symbols: List<Any>,
+    @Input @Optional private val releaseNotes: Any?,
+    @Input private val distributionGroups: List<String>,
+    @Input private val notifyTesters: Boolean
+) : DefaultTask() {
 
     private var loggerFactory = services[ProgressLoggerFactory::class.java]
 
-
     @TaskAction
     fun upload() {
-        val loggerRelease = loggerFactory.newOperation("AppCenter")
-        loggerRelease.start("AppCenter Upload apk", "Step 0/4")
         val uploader = AppCenterUploaderFactory(project).create(apiToken, ownerName, appName)
+
+        val loggerRelease = loggerFactory.newOperation("AppCenter")
+        loggerRelease.start("AppCenter Upload apk", "Step 0/7")
         uploader.uploadApk(fileProvider(), toReleaseNotes(releaseNotes), distributionGroups, notifyTesters) {
             loggerRelease.progress(it)
         }
-        loggerRelease.completed("AppCenter Upload completed", false)
+        loggerRelease.completed("AppCenter Upload apk completed", false)
 
-        val mappingFile = mappingFileProvider()
-        if (mappingFile != null) {
+        if (uploadMappingFiles) {
             val loggerMapping = loggerFactory.newOperation("AppCenter")
-            loggerMapping.start("AppCenter Upload mapping file", "Step 0/4")
-            uploader.uploadSymbols(mappingFile, "AndroidProguard", versionName, versionCode.toString()) {
-                loggerMapping.progress(it)
+            loggerMapping.start("AppCenter Upload mapping file", "Step 0/3")
+            try {
+                val mappingFile = mappingFileProvider.invoke()
+                uploader.uploadMapping(mappingFile, versionName, versionCode) {
+                    loggerMapping.progress(it)
+                }
+                loggerMapping.completed("AppCenter Upload mapping file completed", false)
+            } catch (e: Exception) {
+                loggerMapping.completed("AppCenter Upload mapping file failed", true)
             }
-            loggerMapping.completed("AppCenter Upload mapping completed", false)
         }
 
-        symbols.forEach {
+        symbols.forEach { symbol ->
             val loggerSymbol = loggerFactory.newOperation("AppCenter")
-            loggerSymbol.start("AppCenter Upload symbol $it ", "Step 0/4")
+            loggerSymbol.start("AppCenter Upload symbol $symbol ", "Step 0/3")
             try {
-                uploader.uploadSymbols(toSymbolFile(it), "Breakpad", versionName, versionCode.toString()) {
+                uploader.uploadSymbols(toSymbolFile(symbol), versionName, versionCode) {
                     loggerSymbol.progress(it)
                 }
-                loggerSymbol.completed("AppCenter Upload symbol $it succeed", false)
-            } catch (e : Exception) {
-                loggerSymbol.completed("AppCenter Upload symbol $it failed", true)
+                loggerSymbol.completed("AppCenter Upload symbol $symbol completed", false)
+            } catch (e: Exception) {
+                loggerSymbol.completed("AppCenter Upload symbol $symbol failed", true)
             }
         }
-
     }
 
     private fun toReleaseNotes(releaseNotes: Any?): String {
@@ -85,7 +77,7 @@ open class UploadAppCenterTask : DefaultTask() {
         }.truncate(MAX_RELEASE_NOTES_LENGTH)
     }
 
-    private fun toSymbolFile(symbolFile : Any): File {
+    private fun toSymbolFile(symbolFile: Any): File {
         return when (symbolFile) {
             is File -> symbolFile
             is Path -> symbolFile.toFile()
@@ -97,5 +89,4 @@ open class UploadAppCenterTask : DefaultTask() {
     companion object {
         const val MAX_RELEASE_NOTES_LENGTH = 5000
     }
-
 }
