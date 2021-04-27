@@ -13,18 +13,18 @@ import javax.inject.Inject
 
 
 open class UploadAppCenterTask @Inject constructor(
-    @Input private val apiToken: String,
-    @Input private val ownerName: String,
-    @Input private val appName: String,
-    @Input private val versionName: String,
-    @Input private val versionCode: Int,
-    @Input private val fileProvider: () -> File,
-    @Input private val uploadMappingFiles: Boolean,
-    @Input @Optional private val mappingFileProvider: () -> File,
-    @Input private val symbols: List<Any>,
-    @Input @Optional private val releaseNotes: Any?,
-    @Input private val distributionGroups: List<String>,
-    @Input private val notifyTesters: Boolean
+    private val apiToken: String,
+    private val ownerName: String,
+    private val appName: String,
+    private val versionName: String,
+    private val versionCode: Int,
+    private val fileProvider: () -> File,
+    private val uploadMappingFiles: Boolean,
+    private val mappingFileProvider: () -> File,
+    private val symbols: List<Any>,
+    private val releaseNotes: Any?,
+    private val distributionGroups: List<String>,
+    private val notifyTesters: Boolean
 ) : DefaultTask() {
 
     private var loggerFactory = services[ProgressLoggerFactory::class.java]
