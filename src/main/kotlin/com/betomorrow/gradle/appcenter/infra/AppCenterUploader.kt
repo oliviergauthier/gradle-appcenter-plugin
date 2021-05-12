@@ -6,6 +6,8 @@ import retrofit2.Call
 import retrofit2.Response
 import java.io.File
 
+private const val RELEASE_URL_TEMPLATE =
+    "https://appcenter.ms/orgs/%s/apps/%s/distribute/releases/%s"
 private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
 
 private const val RETRY_DELAY = 1_000L
@@ -80,7 +82,11 @@ class AppCenterUploader(
             notifyTesters = notifyTesters
         )
 
-        apiClient.distribute(ownerName, appName, uploadResult.releaseId!!, request).executeOrThrow()
+        val uploadedReleaseId = uploadResult.releaseId
+        apiClient.distribute(ownerName, appName, uploadedReleaseId!!, request).executeOrThrow()
+        println("AppCenter release url is ${
+            RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)
+        }")
     }
 
     fun uploadMapping(mappingFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {
