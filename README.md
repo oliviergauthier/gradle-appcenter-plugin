@@ -89,7 +89,7 @@ appcenter {
 
 The plugin will generate severals tasks for each variant, ex. for `AlphaRelease`: 
 
-- appCenterUploadBundleAlphaRelease
+- appCenterUploadBinaryAlphaRelease
 - appCenterUploadMappingAlphaRelease # Only when `uploadMappingFiles` is set to true
 - appCenterUploadSymbolsAlphaRelease # Only when `symbols` are provided in configuration 
 - appCenterUploadAlphaRelease
