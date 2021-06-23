@@ -45,4 +45,43 @@ class AppCenterPluginTest {
 
         println(result.output)
     }
+
+
+    @Test
+    fun testApplyPluginOnAndroidApp36Bundle() {
+        val result = GradleRunner.create()
+            .withProjectDir(File("src/integration-test/resources/AndroidApp3.6"))
+            .withArguments(
+                "clean",
+                "appCenterBundleAndUploadAProdDebug",
+                "--stacktrace",
+                "-PapiToken=${properties.apiToken}",
+                "-PownerName=${properties.ownerName}",
+                "-PappName=${properties.appName}"
+            )
+            .withPluginClasspath()
+            .withDebug(true)
+            .build()
+
+        println(result.output)
+    }
+
+    @Test
+    fun testApplyPluginOnAndroidApp41Bundle() {
+        val result = GradleRunner.create()
+            .withProjectDir(File("src/integration-test/resources/AndroidApp4.1"))
+            .withArguments(
+                "clean",
+                "appCenterBundleAndUploadAProdDebug",
+                "--stacktrace",
+                "-PapiToken=${properties.apiToken}",
+                "-PownerName=${properties.ownerName}",
+                "-PappName=${properties.appName}"
+            )
+            .withPluginClasspath()
+            .withDebug(true)
+            .build()
+
+        println(result.output)
+    }
 }

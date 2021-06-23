@@ -14,6 +14,10 @@ open class AppCenterAppExtension(val name: String, val parent: AppCenterExtensio
 
     var appName: String? = null
 
+    var artifactType: ArtifactType = ArtifactType.APK
+
+    var flavor: String = name
+
     var apiToken: String
         get() = _apiToken ?: parent.apiToken
         set(value) {

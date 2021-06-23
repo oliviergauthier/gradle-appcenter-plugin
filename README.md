@@ -69,12 +69,17 @@ appcenter {
             dimension = "environment"           // This dimension match the flavor dimension
             appName = "GradleSample-Alpha"      // The AppCenter application name
         }
-        beta {
-            dimension = "environment"
+        prodRelease {                           // When no dimension and flavor is provided, this name match the full variant name
+            appName = "GradleSample"            // Application Name from AppCenter (see following note)
+        }
+        "ABetaDebug-apk" {
+            flavor = "ABetaDebug"               // When name match won't work, you should provide flavor that will match full variant name
             appName = "GradleSample-Beta"
         }
-        prodRelease {                           // When no dimension is provided, this name match the full variant name
-            appName = "GradleSample"            // Application Name from AppCenter (see following note)
+        "ABetaDebug-aab" {
+            flavor = "ABetaDebug"
+            appName = "GradleSample-Beta"
+            artifactType = "AAB"
         }
     }
 }
@@ -82,9 +87,9 @@ appcenter {
 ```
 **Note** : `ownerName` and `appName` can be found from AppCenter application url (`https://appcenter.ms/users/{ownerName}/apps/{appName}`) 
 
-The plugin will generate severals tasks for each variant : 
+The plugin will generate severals tasks for each variant, ex. for `AlphaRelease`: 
 
-- appCenterUploadApkAlphaRelease
+- appCenterUploadBundleAlphaRelease
 - appCenterUploadMappingAlphaRelease # Only when `uploadMappingFiles` is set to true
 - appCenterUploadSymbolsAlphaRelease # Only when `symbols` are provided in configuration 
 - appCenterUploadAlphaRelease
@@ -124,6 +129,10 @@ appcenter {
     }
 }
 ```
+
+## AAB support
+You can publish AAB artifacts by specifying `artifactType = "AAB"` in `app` section of configuration.
+Please note that there is an issue with downloading aab from AppCenter. On some browsers (ex. Chrome) it is being downloaded as apk. You can either change extension back to aab, or... use a different browser ex. Safari.
 
 ## Gradle Android Plugin Compatibility Matrix
 

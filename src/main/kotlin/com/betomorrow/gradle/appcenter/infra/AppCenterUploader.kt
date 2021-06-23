@@ -1,5 +1,6 @@
 package com.betomorrow.gradle.appcenter.infra
 
+import com.betomorrow.gradle.appcenter.extensions.ArtifactType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
@@ -24,6 +25,7 @@ class AppCenterUploader(
         changeLog: String,
         destinationNames: List<String>,
         notifyTesters: Boolean,
+        artifactType: ArtifactType,
         logger: (String) -> Unit
     ) {
         logger("Step 1/7 : Prepare release upload")
@@ -75,18 +77,24 @@ class AppCenterUploader(
             }
         } while (uploadResult?.uploadStatus != "readyToBePublished")
 
-        logger("Step 7/7 : Distribute release")
-        val request = DistributeRequest(
-            destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList(),
-            releaseNotes = changeLog,
-            notifyTesters = notifyTesters
-        )
+        if (artifactType == ArtifactType.APK && destinationNames.isNotEmpty()) {
+            logger("Step 7/7 : Distribute release")
+            val request = DistributeRequest(
+                destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList(),
+                releaseNotes = changeLog,
+                notifyTesters = notifyTesters
+            )
 
-        val uploadedReleaseId = uploadResult.releaseId
-        apiClient.distribute(ownerName, appName, uploadedReleaseId!!, request).executeOrThrow()
-        println("AppCenter release url is ${
-            RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)
-        }")
+            val uploadedReleaseId = uploadResult.releaseId
+            apiClient.distribute(ownerName, appName, uploadedReleaseId!!, request).executeOrThrow()
+            println(
+                "AppCenter release url is ${
+                    RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)
+                }"
+            )
+        } else {
+            logger("Skipping Step 7/7 : Distribute Release (AAB or no distribution groups)")
+        }
     }
 
     fun uploadMapping(mappingFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {
@@ -97,7 +105,7 @@ class AppCenterUploader(
         uploadSymbols(symbolsFile, "Breakpad", versionName, versionCode.toString(), logger)
     }
 
-    fun uploadSymbols(
+    private fun uploadSymbols(
         mappingFile: File,
         symbolType: String,
         versionName: String,
