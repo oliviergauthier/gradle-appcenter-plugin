@@ -53,7 +53,7 @@ class AppCenterPlugin : Plugin<Project> {
             variant.outputs.withType(ApkVariantOutput::class.java) { output ->
                 val outputFilePath = when (appCenterApp.artifactType) {
                     ArtifactType.APK -> variant.getFinalArtifact(InternalArtifactType.APK)
-                        .get().asPath + output.outputFileName
+                        .get().asPath + "/" + output.outputFileName
                     ArtifactType.AAB -> variant.getFinalArtifact(InternalArtifactType.BUNDLE)
                         .get().asPath
                 }
