@@ -45,9 +45,15 @@ appcenter {
     notifyTesters = false
     symbols = [ "symbols.zip" ]
     apps {
-        alpha {
+        "alpha-apk" {
+            flavor = "alpha"
             dimension = "environment"
             appName = project.properties.get("appName") ?: localProperties.getProperty("appName")
+        }
+        "prod-aab" {
+            flavor = "AProdDebug"
+            appName = project.properties.get("appName") ?: localProperties.getProperty("appName")
+            artifactType = "AAB"
         }
     }
 }

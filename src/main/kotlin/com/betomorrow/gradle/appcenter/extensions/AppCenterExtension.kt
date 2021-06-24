@@ -3,7 +3,6 @@ package com.betomorrow.gradle.appcenter.extensions
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
-import java.lang.Exception
 
 open class AppCenterExtension(val project: Project) {
 
@@ -60,12 +59,12 @@ open class AppCenterExtension(val project: Project) {
         action.execute(apps)
     }
 
-    fun findByFlavor(name: String, dimension: String?): AppCenterAppExtension? {
-        return apps.firstOrNull { it.name == name && dimension == it.dimension }
+    fun findByFlavor(name: String, dimension: String?): List<AppCenterAppExtension> {
+        return apps.filter { it.flavor == name && dimension == it.dimension }
     }
 
-    fun findByBuildVariant(name: String): AppCenterAppExtension? {
-        return apps.firstOrNull { it.name == name }
+    fun findByBuildVariant(name: String): List<AppCenterAppExtension> {
+        return apps.filter { it.flavor == name }
     }
 
     private fun getGlobalConfig(name: String, defaultValue: String): String {
