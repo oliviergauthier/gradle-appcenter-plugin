@@ -3,7 +3,6 @@ package com.betomorrow.gradle.appcenter.extensions
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
-import java.lang.Exception
 
 open class AppCenterExtension(val project: Project) {
 
@@ -69,14 +68,10 @@ open class AppCenterExtension(val project: Project) {
     }
 
     private fun getGlobalConfig(name: String, defaultValue: String): String {
-        return try {
-            System.getProperty(name)
-        } catch (e: Exception) {
-            try {
-                System.getenv(name)
-            } catch (e: Exception) {
-                defaultValue
-            }
+        return if (name.isBlank()) {
+            defaultValue
+        } else {
+            System.getProperty(name) ?: System.getenv(name) ?: defaultValue
         }
     }
 }
