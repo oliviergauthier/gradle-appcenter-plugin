@@ -3,6 +3,8 @@ package com.betomorrow.gradle.appcenter.tasks
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
 import com.betomorrow.gradle.appcenter.utils.truncate
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import java.io.File
@@ -10,13 +12,13 @@ import java.nio.file.Path
 import javax.inject.Inject
 
 open class UploadAppCenterApkTask @Inject constructor(
-    private val apiToken: String,
-    private val ownerName: String,
-    private val appName: String,
-    private val distributionGroups: List<String>,
-    private val notifyTesters: Boolean,
-    private val releaseNotes: Any?,
-    private val fileProvider: () -> File
+    @Input val apiToken: String,
+    @Input val ownerName: String,
+    @Input val appName: String,
+    @Input val distributionGroups: List<String>,
+    @Input val notifyTesters: Boolean,
+    @Input val releaseNotes: Any?,
+    @InputFile val fileProvider: () -> File
 ) : DefaultTask() {
 
     private var loggerFactory = services[ProgressLoggerFactory::class.java]

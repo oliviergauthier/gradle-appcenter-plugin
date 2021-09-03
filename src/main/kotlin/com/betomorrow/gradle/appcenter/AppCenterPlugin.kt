@@ -54,7 +54,6 @@ class AppCenterPlugin : Plugin<Project> {
                 if (output is ApkVariantOutput) {
                     val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalize() }
                     val taskSuffix = "${apkVariant.name.capitalize()}$filterIdentifiersCapitalized"
-
                     val appCenterAppTasks = mutableListOf<TaskProvider<out Task>>()
 
                     appCenterAppTasks.add(project.tasks.register(
@@ -148,5 +147,9 @@ class AppCenterPlugin : Plugin<Project> {
     companion object {
         const val APP_CENTER_EXTENSION_NAME = "appcenter"
         const val APP_CENTER_PLUGIN_GROUP = "AppCenter"
+
+        private fun String.capitalized(): String {
+            return this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.betomorrow.gradle.appcenter.tasks
 
 import com.betomorrow.gradle.appcenter.infra.AppCenterUploaderFactory
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import java.io.File
@@ -9,12 +10,12 @@ import java.nio.file.Path
 import javax.inject.Inject
 
 open class UploadAppCenterSymbolsTask @Inject constructor(
-    private val apiToken: String,
-    private val ownerName: String,
-    private val appName: String,
-    private val versionName: String,
-    private val versionCode: Int,
-    private val symbolsProvider: () -> List<Any>
+    @Input val apiToken: String,
+    @Input val ownerName: String,
+    @Input val appName: String,
+    @Input val versionName: String,
+    @Input val versionCode: Int,
+    @Input val symbolsProvider: () -> List<Any>
 ) : DefaultTask() {
 
     private var loggerFactory = services[ProgressLoggerFactory::class.java]
