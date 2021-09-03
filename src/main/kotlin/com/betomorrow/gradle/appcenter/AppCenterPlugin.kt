@@ -7,9 +7,11 @@ import com.android.build.gradle.internal.api.ApkVariantImpl
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.betomorrow.gradle.appcenter.extensions.AppCenterExtension
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask
-import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask.PackageType.*
+import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask.PackageType.AAB
+import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask.PackageType.APK
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterMappingTask
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterSymbolsTask
+import com.betomorrow.gradle.appcenter.utils.capitalized
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -52,8 +54,8 @@ class AppCenterPlugin : Plugin<Project> {
 
             apkVariant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
-                    val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalize() }
-                    val taskSuffix = "${apkVariant.name.capitalize()}$filterIdentifiersCapitalized"
+                    val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalized() }
+                    val taskSuffix = "${apkVariant.name.capitalized()}$filterIdentifiersCapitalized"
                     val appCenterAppTasks = mutableListOf<TaskProvider<out Task>>()
 
                     appCenterAppTasks.add(project.tasks.register(
@@ -147,9 +149,5 @@ class AppCenterPlugin : Plugin<Project> {
     companion object {
         const val APP_CENTER_EXTENSION_NAME = "appcenter"
         const val APP_CENTER_PLUGIN_GROUP = "AppCenter"
-
-        private fun String.capitalized(): String {
-            return this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        }
     }
 }

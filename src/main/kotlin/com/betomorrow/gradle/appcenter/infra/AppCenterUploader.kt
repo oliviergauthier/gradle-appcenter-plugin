@@ -77,7 +77,7 @@ class AppCenterUploader(
         } while (uploadResult?.uploadStatus != "readyToBePublished")
 
         val uploadedReleaseId = uploadResult.releaseId
-        val destinations = if (file.extension.toLowerCase(Locale.ROOT) != "aab") {
+        val destinations = if (file.extension.lowercase(Locale.ROOT) != "aab") {
             destinationNames.map { DistributeRequest.Destination(it) }.toList()
         } else {
             null
