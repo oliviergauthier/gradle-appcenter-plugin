@@ -4,7 +4,7 @@
 
 ## Summary
 
-This plugin allow you to upload android application to AppCenter. You can declare several applications, the plugin will take care of build variant to upload the apk on the right AppCenter application
+This plugin allow you to upload android application to AppCenter. You can declare several applications, the plugin will take care of uploading the APK or AAB on the right AppCenter application
 
 Find last version on [Gradle Repository](https://plugins.gradle.org/plugin/com.betomorrow.appcenter)
 
@@ -85,13 +85,18 @@ appcenter {
 The plugin will generate severals tasks for each variant : 
 
 - appCenterUploadApkAlphaRelease
+- appCenterUploadAabAlphaRelease
 - appCenterUploadMappingAlphaRelease # Only when `uploadMappingFiles` is set to true
 - appCenterUploadSymbolsAlphaRelease # Only when `symbols` are provided in configuration 
 - appCenterUploadAlphaRelease
 
-To upload an apk, just run tasks assemble and appCenterUpload
+To upload an apk, just run tasks assemble and appCenterUploadApk
 
-`./gradlew assembleAlphaRelease appCenterUploadAlphaRelease`
+`./gradlew assembleAlphaRelease appCenterUploadApkAlphaRelease`
+
+To upload an aab, just run tasks bundle and appCenterUploadAab
+
+`./gradlew bundleAlphaRelease appCenterUploadAabAlphaRelease`
 
 
 ## Override properties

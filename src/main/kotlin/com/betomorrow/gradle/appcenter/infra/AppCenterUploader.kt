@@ -5,6 +5,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
+import java.util.*
 
 private const val RELEASE_URL_TEMPLATE =
     "https://appcenter.ms/orgs/%s/apps/%s/distribute/releases/%s"
@@ -75,18 +76,21 @@ class AppCenterUploader(
             }
         } while (uploadResult?.uploadStatus != "readyToBePublished")
 
+        val uploadedReleaseId = uploadResult.releaseId
+        val destinations = if (file.extension.toLowerCase(Locale.ROOT) != "aab") {
+            destinationNames.map { DistributeRequest.Destination(it) }.toList()
+        } else {
+            null
+        }
         logger("Step 7/7 : Distribute release")
         val request = DistributeRequest(
-            destinations = destinationNames.map { DistributeRequest.Destination(it) }.toList(),
+            destinations = destinations,
             releaseNotes = changeLog,
             notifyTesters = notifyTesters
         )
-
-        val uploadedReleaseId = uploadResult.releaseId
         apiClient.distribute(ownerName, appName, uploadedReleaseId!!, request).executeOrThrow()
-        println("AppCenter release url is ${
-            RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)
-        }")
+
+        println("AppCenter release url is ${RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)}")
     }
 
     fun uploadMapping(mappingFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {
