@@ -3,12 +3,8 @@ package com.betomorrow.gradle.appcenter
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.internal.api.ApkVariantImpl
-import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.betomorrow.gradle.appcenter.extensions.AppCenterExtension
-import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask
-import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask.PackageType.AAB
-import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterAppPackageTask.PackageType.APK
+import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterApkTask
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterMappingTask
 import com.betomorrow.gradle.appcenter.tasks.UploadAppCenterSymbolsTask
 import com.betomorrow.gradle.appcenter.utils.capitalized
@@ -40,28 +36,28 @@ class AppCenterPlugin : Plugin<Project> {
     }
 
     private fun handleVariant(variant: ApplicationVariant, appCenterExtension: AppCenterExtension, project: Project) {
-        val apkVariant = variant as? ApkVariantImpl ?: return
-        val appCenterApp = apkVariant.productFlavors.mapNotNull {
+        val appCenterApp = variant.productFlavors.mapNotNull {
             appCenterExtension.findByFlavor(
                 it.name,
                 it.dimension
             )
-        }.firstOrNull() ?: appCenterExtension.findByBuildVariant(apkVariant.name)
+        }.firstOrNull() ?: appCenterExtension.findByBuildVariant(variant.name)
 
         appCenterApp?.let {
-            val outputDirectory = apkVariant.packageApplicationProvider.get().outputDirectory.get().asFile
-            val assembleTask = apkVariant.assembleProvider.get()
+            val outputDirectory = variant.packageApplicationProvider.get().outputDirectory.get().asFile
+            val assembleTask = variant.assembleProvider.get()
 
-            apkVariant.outputs.all { output ->
+            variant.outputs.all { output ->
                 if (output is ApkVariantOutput) {
                     val filterIdentifiersCapitalized = output.filters.joinToString("") { it.identifier.capitalized() }
-                    val taskSuffix = "${apkVariant.name.capitalized()}$filterIdentifiersCapitalized"
+
+                    val taskSuffix = "${variant.name.capitalized()}$filterIdentifiersCapitalized"
+
                     val appCenterAppTasks = mutableListOf<TaskProvider<out Task>>()
 
                     appCenterAppTasks.add(project.tasks.register(
                         "appCenterUploadApk$taskSuffix",
-                        UploadAppCenterAppPackageTask::class.java,
-                        APK,
+                        UploadAppCenterApkTask::class.java,
                         appCenterApp.apiToken,
                         appCenterApp.ownerName,
                         appCenterApp.appName,
@@ -72,26 +68,7 @@ class AppCenterPlugin : Plugin<Project> {
                     ).apply {
                         configure { task ->
                             task.group = APP_CENTER_PLUGIN_GROUP
-                            task.description = "Upload ${apkVariant.name} APK to AppCenter"
-                            task.mustRunAfter(assembleTask)
-                        }
-                    })
-
-                    appCenterAppTasks.add(project.tasks.register(
-                        "appCenterUploadAab$taskSuffix",
-                        UploadAppCenterAppPackageTask::class.java,
-                        AAB,
-                        appCenterApp.apiToken,
-                        appCenterApp.ownerName,
-                        appCenterApp.appName,
-                        appCenterApp.distributionGroups,
-                        appCenterApp.notifyTesters,
-                        appCenterApp.releaseNotes,
-                        { File(apkVariant.getFinalArtifact(InternalArtifactType.BUNDLE).get().asPath) }
-                    ).apply {
-                        configure { task ->
-                            task.group = APP_CENTER_PLUGIN_GROUP
-                            task.description = "Upload ${apkVariant.name} AAB to AppCenter"
+                            task.description = "Upload ${variant.name} APK to AppCenter"
                             task.mustRunAfter(assembleTask)
                         }
                     })
@@ -103,13 +80,13 @@ class AppCenterPlugin : Plugin<Project> {
                             appCenterApp.apiToken,
                             appCenterApp.ownerName,
                             appCenterApp.appName,
-                            apkVariant.versionName,
-                            apkVariant.versionCode,
-                            { apkVariant.mappingFileProvider.get().first() }
+                            variant.versionName,
+                            variant.versionCode,
+                            { variant.mappingFileProvider.get().first() }
                         ).apply {
                             configure { task ->
                                 task.group = APP_CENTER_PLUGIN_GROUP
-                                task.description = "Upload ${apkVariant.name} Mapping to AppCenter"
+                                task.description = "Upload ${variant.name} Mapping to AppCenter"
                                 task.mustRunAfter(assembleTask)
                             }
                         })
@@ -122,24 +99,33 @@ class AppCenterPlugin : Plugin<Project> {
                             appCenterApp.apiToken,
                             appCenterApp.ownerName,
                             appCenterApp.appName,
-                            apkVariant.versionName,
-                            apkVariant.versionCode,
+                            variant.versionName,
+                            variant.versionCode,
                             { appCenterApp.symbols }
                         ).apply {
                             configure { task ->
                                 task.group = APP_CENTER_PLUGIN_GROUP
-                                task.description = "Upload ${apkVariant.name} Symbols to AppCenter"
+                                task.description = "Upload ${variant.name} Symbols to AppCenter"
                                 task.mustRunAfter(assembleTask)
                             }
                         })
                     }
 
-                    project.tasks.register(
+                    val uploadTasks = project.tasks.register(
                         "appCenterUpload$taskSuffix"
                     ) { task ->
                         task.group = APP_CENTER_PLUGIN_GROUP
-                        task.description = "Upload ${apkVariant.name} to AppCenter"
+                        task.description = "Upload ${variant.name} to AppCenter"
                         task.dependsOn(*(appCenterAppTasks.toTypedArray()))
+                    }
+
+                    project.tasks.register(
+                        "appCenterAssembleAndUpload$taskSuffix"
+                    ) { task ->
+                        task.group = APP_CENTER_PLUGIN_GROUP
+                        task.description =
+                            "Assemble and upload ${variant.name} APK to AppCenter. (Deprecated, call ${assembleTask.name} explicitly then use appCenterUpload$taskSuffix task)"
+                        task.dependsOn(uploadTasks, assembleTask)
                     }
                 }
             }
