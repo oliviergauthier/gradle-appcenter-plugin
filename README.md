@@ -1,6 +1,7 @@
 # AppCenter Gradle Plugin
 
-[![Build Status](https://travis-ci.com/oliviergauthier/gradle-appcenter-plugin.svg?branch=master)](https://travis-ci.com/oliviergauthier/gradle-appcenter-plugin.svg?branch=master)
+[![Build Status](https://travis-ci.com/oliviergauthier/gradle-appcenter-plugin.svg?branch=master)](https://travis-ci.com/oliviergauthier/gradle-appcenter-plugin.svg?branch=master) 
+[![Gradle Plugins Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/betomorrow/appcenter/com.betomorrow.appcenter.gradle.plugin/maven-metadata.xml.svg?label=Gradle%20Plugins%20Portal)](https://plugins.gradle.org/plugin/com.betomorrow.appcenter)
 
 ## Summary
 
