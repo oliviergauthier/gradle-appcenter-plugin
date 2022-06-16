@@ -14,7 +14,7 @@ class AppCenterUploaderTest {
         val debug = true
         val project = ProjectBuilder.builder().build()
         val apiFactory = AppCenterAPIFactory(project, properties.apiToken, debug)
-        val uploader = AppCenterUploader(apiFactory, properties.ownerName, properties.appName)
+        val uploader = AppCenterUploader(project, apiFactory, properties.ownerName, properties.appName)
 
         val file = File("src/integration-test/resources/test.apk")
         uploader.uploadApk(file, "newVersion", listOf("Collaborators"), false) {
@@ -27,7 +27,7 @@ class AppCenterUploaderTest {
         val debug = true
         val project = ProjectBuilder.builder().build()
         val apiFactory = AppCenterAPIFactory(project, properties.apiToken, debug)
-        val uploader = AppCenterUploader(apiFactory, properties.ownerName, properties.appName)
+        val uploader = AppCenterUploader(project, apiFactory, properties.ownerName, properties.appName)
 
         val mappingFile = File("src/integration-test/resources/mapping.txt")
         uploader.uploadMapping(mappingFile, "1.0", 1) {

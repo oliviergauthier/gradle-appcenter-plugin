@@ -2,6 +2,7 @@ package com.betomorrow.gradle.appcenter.infra
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.gradle.api.Project
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
@@ -17,6 +18,7 @@ private const val MAX_RETRIES = 25
 private const val BACKOFF_MULTIPLIER = 1.25
 
 class AppCenterUploader(
+    private val project: Project,
     private val apiFactory: AppCenterAPIFactory,
     private val ownerName: String,
     private val appName: String
@@ -91,10 +93,11 @@ class AppCenterUploader(
         )
 
         val uploadedReleaseId = uploadResult.releaseId
+        project.extensions.extraProperties.set("RELEASE_ID", uploadedReleaseId)
         apiClient.distribute(ownerName, appName, uploadedReleaseId!!, request).executeOrThrow()
         println("AppCenter release url is ${
             RELEASE_URL_TEMPLATE.format(ownerName, appName, uploadedReleaseId)
-        }")
+        }, if needed the id is accessible from the project extension extra properties.")
     }
 
     fun uploadMapping(mappingFile: File, versionName: String, versionCode: Int, logger: (String) -> Unit) {

@@ -14,6 +14,6 @@ class AppCenterUploaderFactory(
         }
 
         val apiFactory = AppCenterAPIFactory(project, apiToken, true)
-        return AppCenterUploader(apiFactory, ownerName, appName)
+        return AppCenterUploader(project, apiFactory, ownerName, appName)
     }
 }
