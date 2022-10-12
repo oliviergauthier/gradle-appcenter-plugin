@@ -11,8 +11,11 @@ private const val RELEASE_URL_TEMPLATE =
     "https://appcenter.ms/orgs/%s/apps/%s/distribute/releases/%s"
 private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
 
-private const val RETRY_DELAY = 1_000L
-private const val MAX_RETRIES = 60
+// This leads to a maximum waiting time of about 15± minutes with a maximum total of 25 network requests (request time not included)
+// The longest time between 2 requests would be:
+private const val INITIAL_RETRY_DELAY = 1_000L
+private const val MAX_RETRIES = 25
+private const val BACKOFF_MULTIPLIER = 1.25
 
 class AppCenterUploader(
     private val apiFactory: AppCenterAPIFactory,
@@ -66,11 +69,16 @@ class AppCenterUploader(
 
         var requestCount = 0
         var uploadResult: GetUploadResponse?
+        var timeOutMs = INITIAL_RETRY_DELAY
         do {
             logger("Step 6/7 : Waiting for release to be ready to publish (${requestCount}s)")
             uploadResult = apiClient.getUpload(ownerName, appName, preparedUpload.id).executeOrThrow()
-            Thread.sleep(RETRY_DELAY)
+            Thread.sleep(timeOutMs)
+            timeOutMs = (timeOutMs * BACKOFF_MULTIPLIER).toLong()
 
+            if(uploadResult.uploadStatus == "error") {
+                throw AppCenterUploaderException("Fetching release id failed, upload status equals 'error'.")
+            }
             if (++requestCount >= MAX_RETRIES) {
                 throw AppCenterUploaderException("Fetching release id failed: Tried $requestCount times.")
             }
